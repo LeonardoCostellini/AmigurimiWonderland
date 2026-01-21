@@ -1,8 +1,1 @@
-{
-"name": "admin-panel",
-"dependencies": {
-"express": "^4.19.2",
-"pg": "^8.11.5",
-"cors": "^2.8.5"
-}
-}
+{"name":"admin-panel","dependencies":{"cors":"^2.8.5","dotenv":"^17.2.3","express":"^4.19.2","pg":"^8.11.5"}}
