@@ -1,5 +1,6 @@
 require('dotenv').config();
 const pool = require('./db');
+const { v4: uuidv4 } = require('uuid');
 
 async function adicionarDadosExemplo() {
   try {
@@ -13,21 +14,36 @@ async function adicionarDadosExemplo() {
     // Verificar se já existem categorias
     const { rows: existingCategories } = await pool.query('SELECT * FROM categories');
     
-    if (existingCategories.length === 0) {
+    if (existingCategories.length <= 1) {
       console.log('📦 Criando categorias de exemplo...');
       
+      // Criar categorias com UUID
       await pool.query(`
-        INSERT INTO categories (name, description) VALUES 
-        ('Personagens BT21', 'Amigurumis inspirados nos personagens BT21'),
-        ('Animais Fofos', 'Bichinhos de crochê adoráveis'),
-        ('Personagens Disney', 'Personagens clássicos da Disney'),
-        ('Frutas e Vegetais', 'Amigurumis de comidas kawaii')
-      `);
+        INSERT INTO categories (id, name, description) VALUES 
+        ($1, 'Animais Fofos', 'Bichinhos de crochê adoráveis'),
+        ($2, 'Personagens Disney', 'Personagens clássicos da Disney'),
+        ($3, 'Frutas e Vegetais', 'Amigurumis de comidas kawaii')
+      `, [uuidv4(), uuidv4(), uuidv4()]);
       
-      console.log('✅ 4 categorias criadas!');
+      console.log('✅ Categorias adicionais criadas!');
     } else {
       console.log('ℹ️  Categorias já existem no banco.');
     }
+    
+    // Pegar todas as categorias
+    const { rows: categories } = await pool.query('SELECT * FROM categories LIMIT 1');
+    
+    if (categories.length === 0) {
+      console.log('⚠️  Nenhuma categoria encontrada. Criando categoria padrão...');
+      await pool.query(`
+        INSERT INTO categories (id, name, description) VALUES 
+        ($1, 'Personagens BT21', 'Amigurumis inspirados nos personagens BT21')
+      `, [uuidv4()]);
+      const { rows: newCat } = await pool.query('SELECT * FROM categories LIMIT 1');
+      categories.push(newCat[0]);
+    }
+    
+    const categoryId = categories[0].id;
     
     // Verificar se já existem produtos
     const { rows: existingProducts } = await pool.query('SELECT * FROM products');
@@ -36,20 +52,18 @@ async function adicionarDadosExemplo() {
       console.log('');
       console.log('🧸 Criando produtos de exemplo...');
       
-      // Pegar ID da primeira categoria
-      const { rows: categories } = await pool.query('SELECT id FROM categories LIMIT 1');
-      const categoryId = categories[0].id;
-      
+      // Criar produtos com UUID
       await pool.query(`
-        INSERT INTO products (name, description, price, stock, image_url, category_id) VALUES 
-        ('Tata BT21', 'Amigurumi do personagem Tata, feito à mão com linha de alta qualidade', 45.00, 5, 'https://via.placeholder.com/300', $1),
-        ('Cooky BT21', 'Amigurumi do coelhinho Cooky, perfeito para presentear', 45.00, 3, 'https://via.placeholder.com/300', $1),
-        ('Mang BT21', 'Amigurumi do cavalinho Mang, super fofo', 42.00, 8, 'https://via.placeholder.com/300', $1),
-        ('Shooky BT21', 'Amigurumi do Shooky, com expressão divertida', 40.00, 6, 'https://via.placeholder.com/300', $1),
-        ('RJ BT21', 'Amigurumi do RJ com capuz removível', 48.00, 4, 'https://via.placeholder.com/300', $1)
-      `, [categoryId]);
+        INSERT INTO products (id, name, description, price, stock_info, image_url, category_id) VALUES 
+        ($1, 'Tata BT21', 'Amigurumi do personagem Tata, feito à mão com linha de alta qualidade', 45.00, '5 unidades', 'https://via.placeholder.com/300', $7),
+        ($2, 'Cooky BT21', 'Amigurumi do coelhinho Cooky, perfeito para presentear', 45.00, '3 unidades', 'https://via.placeholder.com/300', $7),
+        ($3, 'Mang BT21', 'Amigurumi do cavalinho Mang, super fofo', 42.00, '8 unidades', 'https://via.placeholder.com/300', $7),
+        ($4, 'Shooky BT21', 'Amigurumi do Shooky, com expressão divertida', 40.00, '6 unidades', 'https://via.placeholder.com/300', $7),
+        ($5, 'RJ BT21', 'Amigurumi do RJ com capuz removível', 48.00, '4 unidades', 'https://via.placeholder.com/300', $7),
+        ($6, 'Koya BT21', 'Amigurumi do Koya dorminhoco', 43.00, '7 unidades', 'https://via.placeholder.com/300', $7)
+      `, [uuidv4(), uuidv4(), uuidv4(), uuidv4(), uuidv4(), uuidv4(), categoryId]);
       
-      console.log('✅ 5 produtos criados!');
+      console.log('✅ 6 produtos criados!');
     } else {
       console.log('ℹ️  Produtos já existem no banco.');
     }
@@ -70,16 +84,17 @@ async function adicionarDadosExemplo() {
     
     // Listar produtos
     const { rows: products } = await pool.query(`
-      SELECT p.name, p.price, p.stock, c.name as category 
+      SELECT p.name, p.price, p.stock_info, c.name as category 
       FROM products p 
       LEFT JOIN categories c ON p.category_id = c.id
+      ORDER BY p.created_at DESC
     `);
     
     if (products.length > 0) {
       console.log('🧸 PRODUTOS CADASTRADOS:');
       console.log('========================');
       products.forEach(p => {
-        console.log(`   • ${p.name} - R$ ${p.price} (Estoque: ${p.stock}) - ${p.category || 'Sem categoria'}`);
+        console.log(`   • ${p.name} - R$ ${p.price} (${p.stock_info}) - ${p.category || 'Sem categoria'}`);
       });
     }
     
