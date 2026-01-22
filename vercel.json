@@ -1,50 +1,74 @@
 {
   "version": 2,
+  "env": {
+    "DATABASE_URL": "@database_url"
+  },
   "builds": [
     {
-      "src": "api/index.js",
+      "src": "api/**/*.js",
       "use": "@vercel/node"
+    },
+    {
+      "src": "Frontend/**",
+      "use": "@vercel/static"
     }
   ],
   "routes": [
     {
-      "src": "/api/(.*)",
-      "dest": "api/index.js"
+      "src": "/api/auth",
+      "methods": ["POST", "GET", "OPTIONS"],
+      "dest": "/api/auth.js"
+    },
+    {
+      "src": "/api/products",
+      "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+      "dest": "/api/products.js"
+    },
+    {
+      "src": "/api/products/(.*)",
+      "methods": ["GET", "PUT", "DELETE", "OPTIONS"],
+      "dest": "/api/products.js"
+    },
+    {
+      "src": "/api/categories",
+      "methods": ["GET", "POST", "OPTIONS"],
+      "dest": "/api/categories.js"
+    },
+    {
+      "src": "/api",
+      "dest": "/api/index.js"
     },
     {
       "src": "/login.html",
-      "dest": "Frontend/login.html"
+      "dest": "/Frontend/login.html"
     },
     {
       "src": "/dashboard.html",
-      "dest": "Frontend/dashboard.html"
+      "dest": "/Frontend/dashboard.html"
     },
     {
       "src": "/js/(.*)",
-      "dest": "Frontend/js/$1"
+      "dest": "/Frontend/js/$1"
     },
     {
       "src": "/css/(.*)",
-      "dest": "Frontend/css/$1"
+      "dest": "/Frontend/css/$1"
     },
     {
       "src": "/img/(.*)",
-      "dest": "Frontend/img/$1"
+      "dest": "/Frontend/img/$1"
     },
     {
       "src": "/style.css",
-      "dest": "Frontend/style.css"
+      "dest": "/Frontend/style.css"
     },
     {
       "src": "/script.js",
-      "dest": "Frontend/script.js"
+      "dest": "/Frontend/script.js"
     },
     {
       "src": "/(.*)",
-      "dest": "Frontend/index.html"
+      "dest": "/Frontend/$1"
     }
-  ],
-  "env": {
-    "DATABASE_URL": "@database_url"
-  }
+  ]
 }
