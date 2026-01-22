@@ -5,7 +5,7 @@ echo "========================================================"
 echo ""
 
 # Verificar se está na pasta correta
-if [ ! -f "scripts/setup-admin.js" ]; then
+if [ ! -f "api/setup-admin.js" ]; then
     echo "❌ Erro: Execute este script na pasta raiz do projeto!"
     exit 1
 fi
@@ -15,7 +15,8 @@ npm install
 
 echo ""
 echo "2️⃣  Configurando usuário administrador..."
-node scripts/setup-admin.js
+cd api
+node setup-admin.js
 
 echo ""
 echo "✅ Configuração concluída!"

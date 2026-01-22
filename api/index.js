@@ -10,11 +10,7 @@ module.exports = async (req, res) => {
     endpoints: [
       'POST /api/auth - Autenticação',
       'GET /api/products - Listar produtos',
-      'POST /api/products - Criar produto',
-      'PUT /api/products/:id - Atualizar produto',
-      'DELETE /api/products/:id - Deletar produto',
-      'GET /api/categories - Listar categorias',
-      'POST /api/categories - Criar categoria'
+      'GET /api/categories - Listar categorias'
     ]
   });
 };
