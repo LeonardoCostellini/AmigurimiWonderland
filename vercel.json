@@ -15,22 +15,22 @@
     {
       "src": "/api/auth",
       "methods": ["POST", "GET", "OPTIONS"],
-      "dest": "/api/auth.js"
+      "dest": "/api/admin.js"
     },
     {
       "src": "/api/products",
       "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-      "dest": "/api/products.js"
+      "dest": "/api/admin.js"
     },
     {
       "src": "/api/products/(.*)",
       "methods": ["GET", "PUT", "DELETE", "OPTIONS"],
-      "dest": "/api/products.js"
+      "dest": "/api/admin.js"
     },
     {
       "src": "/api/categories",
       "methods": ["GET", "POST", "OPTIONS"],
-      "dest": "/api/categories.js"
+      "dest": "/api/admin.js"
     },
     {
       "src": "/api",
