@@ -1,33 +1,123 @@
+// Função de login com tratamento de erro melhorado
 async function login() {
-const email = document.getElementById('email').value;
-const password = document.getElementById('password').value;
+  try {
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
 
+    console.log('Tentando fazer login com:', email);
 
-const res = await fetch('/api/auth', {
-method: 'POST',
-headers: { 'Content-Type': 'application/json' },
-body: JSON.stringify({ email, password })
-});
+    if (!email || !password) {
+      alert('Por favor, preencha email e senha!');
+      return;
+    }
 
+    const res = await fetch('/api/auth', {
+      method: 'POST',
+      headers: { 
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
+      body: JSON.stringify({ email, password })
+    });
 
-if (res.ok) window.location = 'dashboard.html';
-else alert('Login inválido');
+    console.log('Status da resposta:', res.status);
+
+    if (res.ok) {
+      const data = await res.json();
+      console.log('Login bem-sucedido:', data);
+      
+      // Salvar informações do admin no localStorage
+      localStorage.setItem('admin', JSON.stringify(data.admin));
+      
+      // Redirecionar para o dashboard
+      window.location.href = '/dashboard.html';
+    } else {
+      const error = await res.json().catch(() => ({ error: 'Erro desconhecido' }));
+      console.error('Erro no login:', error);
+      alert('Login inválido: ' + (error.error || 'Email ou senha incorretos'));
+    }
+  } catch (error) {
+    console.error('Erro ao fazer login:', error);
+    alert('Erro ao conectar com o servidor. Verifique sua conexão.');
+  }
 }
 
-
+// Função para carregar produtos
 async function loadProducts() {
-const res = await fetch('/api/products');
-const data = await res.json();
-document.getElementById('content').innerHTML = data.map(p => `
-<div class="card">${p.name} - R$ ${p.price}</div>
-`).join('');
+  try {
+    const res = await fetch('/api/products');
+    
+    if (!res.ok) {
+      throw new Error('Erro ao carregar produtos');
+    }
+    
+    const data = await res.json();
+    const content = document.getElementById('content');
+    
+    if (data.length === 0) {
+      content.innerHTML = '<p>Nenhum produto encontrado.</p>';
+      return;
+    }
+    
+    content.innerHTML = data.map(p => `
+      <div class="card">
+        <h3>${p.name}</h3>
+        <p>R$ ${parseFloat(p.price).toFixed(2)}</p>
+        <p>${p.stock_info || 'Sem informação de estoque'}</p>
+      </div>
+    `).join('');
+  } catch (error) {
+    console.error('Erro ao carregar produtos:', error);
+    document.getElementById('content').innerHTML = '<p>Erro ao carregar produtos.</p>';
+  }
 }
 
-
+// Função para carregar categorias
 async function loadCategories() {
-const res = await fetch('/api/categories');
-const data = await res.json();
-document.getElementById('content').innerHTML = data.map(c => `
-<div class="card">${c.name}</div>
-`).join('');
+  try {
+    const res = await fetch('/api/categories');
+    
+    if (!res.ok) {
+      throw new Error('Erro ao carregar categorias');
+    }
+    
+    const data = await res.json();
+    const content = document.getElementById('content');
+    
+    if (data.length === 0) {
+      content.innerHTML = '<p>Nenhuma categoria encontrada.</p>';
+      return;
+    }
+    
+    content.innerHTML = data.map(c => `
+      <div class="card">
+        <h3>${c.name}</h3>
+        <p>${c.description || 'Sem descrição'}</p>
+      </div>
+    `).join('');
+  } catch (error) {
+    console.error('Erro ao carregar categorias:', error);
+    document.getElementById('content').innerHTML = '<p>Erro ao carregar categorias.</p>';
+  }
+}
+
+// Verificar se está autenticado (para páginas protegidas)
+function checkAuth() {
+  const admin = localStorage.getItem('admin');
+  if (!admin && window.location.pathname.includes('dashboard')) {
+    window.location.href = '/login.html';
+  }
+}
+
+// Função de logout
+function logout() {
+  localStorage.removeItem('admin');
+  window.location.href = '/login.html';
+}
+
+// Executar verificação ao carregar a página
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', checkAuth);
+} else {
+  checkAuth();
 }
