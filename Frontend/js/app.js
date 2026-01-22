@@ -11,7 +11,7 @@ async function login() {
       return;
     }
 
-    const res = await fetch('/api/auth', {
+    const res = await fetch('/auth', {
       method: 'POST',
       headers: { 
         'Content-Type': 'application/json',
@@ -45,7 +45,7 @@ async function login() {
 // Função para carregar produtos
 async function loadProducts() {
   try {
-    const res = await fetch('/api/products');
+    const res = await fetch('/products');
     
     if (!res.ok) {
       throw new Error('Erro ao carregar produtos');
@@ -75,7 +75,7 @@ async function loadProducts() {
 // Função para carregar categorias
 async function loadCategories() {
   try {
-    const res = await fetch('/api/categories');
+    const res = await fetch('/categories');
     
     if (!res.ok) {
       throw new Error('Erro ao carregar categorias');
