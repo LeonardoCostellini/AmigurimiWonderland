@@ -1,5 +1,50 @@
 {
-"version": 2,
-"builds": [{ "src": "backend/api/index.js", "use": "@vercel/node" }],
-"routes": [{ "src": "/api/(.*)", "dest": "backend/api/index.js" }]
+  "version": 2,
+  "builds": [
+    {
+      "src": "api/index.js",
+      "use": "@vercel/node"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "api/index.js"
+    },
+    {
+      "src": "/login.html",
+      "dest": "Frontend/login.html"
+    },
+    {
+      "src": "/dashboard.html",
+      "dest": "Frontend/dashboard.html"
+    },
+    {
+      "src": "/js/(.*)",
+      "dest": "Frontend/js/$1"
+    },
+    {
+      "src": "/css/(.*)",
+      "dest": "Frontend/css/$1"
+    },
+    {
+      "src": "/img/(.*)",
+      "dest": "Frontend/img/$1"
+    },
+    {
+      "src": "/style.css",
+      "dest": "Frontend/style.css"
+    },
+    {
+      "src": "/script.js",
+      "dest": "Frontend/script.js"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "Frontend/index.html"
+    }
+  ],
+  "env": {
+    "DATABASE_URL": "@database_url"
+  }
 }
