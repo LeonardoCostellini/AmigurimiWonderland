@@ -1,27 +1,22 @@
-const { PrismaClient } = require('@prisma/client')
+const { Pool } = require('@neondatabase/serverless')
 
-// ======================
-// PRISMA SINGLETON (Vercel Safe)
-// ======================
-let prisma
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  ssl: true
+})
 
-if (!global.prisma) {
-  global.prisma = new PrismaClient()
-}
-
-prisma = global.prisma
-
-module.exports = async function handler(req, res) {
+module.exports = async (req, res) => {
   try {
     // ======================
     // LISTAR (GET)
     // ======================
     if (req.method === 'GET') {
-      const products = await prisma.product.findMany({
-        orderBy: { createdAt: 'desc' }
-      })
-
-      return res.status(200).json(products)
+      const { rows } = await pool.query(`
+        SELECT id, name, description, price, images
+        FROM products
+        ORDER BY created_at DESC
+      `)
+      return res.status(200).json(rows)
     }
 
     // ======================
@@ -30,22 +25,17 @@ module.exports = async function handler(req, res) {
     if (req.method === 'POST') {
       const { name, description, price, images } = req.body || {}
 
-      if (!name || !price || !Array.isArray(images) || images.length === 0) {
-        return res.status(400).json({
-          error: 'Campos obrigatórios: name, price, images[]'
-        })
+      if (!name || !price || !Array.isArray(images)) {
+        return res.status(400).json({ error: 'Dados inválidos' })
       }
 
-      const product = await prisma.product.create({
-        data: {
-          name,
-          description: description || '',
-          price: Number(price),
-          images
-        }
-      })
+      const { rows } = await pool.query(`
+        INSERT INTO products (name, description, price, images)
+        VALUES ($1, $2, $3, $4)
+        RETURNING *
+      `, [name, description || '', price, JSON.stringify(images)])
 
-      return res.status(201).json(product)
+      return res.status(201).json(rows[0])
     }
 
     // ======================
@@ -55,21 +45,20 @@ module.exports = async function handler(req, res) {
       const { id } = req.query
       const { name, description, price, images } = req.body || {}
 
-      if (!id) {
-        return res.status(400).json({ error: 'ID é obrigatório' })
-      }
+      if (!id) return res.status(400).json({ error: 'ID obrigatório' })
 
-      const product = await prisma.product.update({
-        where: { id: Number(id) },
-        data: {
-          name,
-          description,
-          price: price !== undefined ? Number(price) : undefined,
-          images
-        }
-      })
+      const { rows } = await pool.query(`
+        UPDATE products
+        SET
+          name = COALESCE($1, name),
+          description = COALESCE($2, description),
+          price = COALESCE($3, price),
+          images = COALESCE($4, images)
+        WHERE id = $5
+        RETURNING *
+      `, [name, description, price, images && JSON.stringify(images), id])
 
-      return res.status(200).json(product)
+      return res.status(200).json(rows[0])
     }
 
     // ======================
@@ -77,25 +66,16 @@ module.exports = async function handler(req, res) {
     // ======================
     if (req.method === 'DELETE') {
       const { id } = req.query
+      if (!id) return res.status(400).json({ error: 'ID obrigatório' })
 
-      if (!id) {
-        return res.status(400).json({ error: 'ID é obrigatório' })
-      }
-
-      await prisma.product.delete({
-        where: { id: Number(id) }
-      })
-
+      await pool.query(`DELETE FROM products WHERE id = $1`, [id])
       return res.status(200).json({ success: true })
     }
 
-    // ======================
-    // FALLBACK
-    // ======================
     return res.status(405).json({ error: 'Method not allowed' })
 
   } catch (err) {
     console.error('PRODUCT API ERROR:', err)
-    return res.status(500).json({ error: 'Erro interno do servidor' })
+    res.status(500).json({ error: 'Erro interno' })
   }
 }
