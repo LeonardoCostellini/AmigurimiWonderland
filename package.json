@@ -3,10 +3,10 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-"scripts": {
-  "dev": "node server.js"
-}
-,
+  "type": "commonjs",
+  "scripts": {
+    "dev": "node server.js"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/LeonardoCostellini/AmigurimiWonderland.git"
@@ -14,7 +14,6 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "type": "commonjs",
   "bugs": {
     "url": "https://github.com/LeonardoCostellini/AmigurimiWonderland/issues"
   },
@@ -27,8 +26,4 @@
     "jsonwebtoken": "^9.0.3",
     "prisma": "^6.19.2"
   }
-}
-
-{
-  "type": "module"
 }
