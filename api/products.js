@@ -13,7 +13,7 @@ module.exports = async function handler(req, res) {
         orderBy: { createdAt: 'desc' }
       })
 
-      return res.json(products)
+      return res.status(200).json(products)
     } catch (err) {
       console.error(err)
       return res.status(500).json({ error: 'Erro ao listar produtos' })
@@ -67,7 +67,7 @@ module.exports = async function handler(req, res) {
         }
       })
 
-      return res.json(product)
+      return res.status(200).json(product)
     } catch (err) {
       console.error(err)
       return res.status(500).json({ error: 'Erro ao atualizar produto' })
@@ -85,7 +85,7 @@ module.exports = async function handler(req, res) {
         where: { id }
       })
 
-      return res.json({ success: true })
+      return res.status(200).json({ success: true })
     } catch (err) {
       console.error(err)
       return res.status(500).json({

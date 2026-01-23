@@ -1,101 +1,40 @@
 const { PrismaClient } = require('@prisma/client')
+const bcrypt = require('bcrypt')
+const jwt = require('jsonwebtoken')
 
 const prisma = new PrismaClient()
 
 module.exports = async function handler(req, res) {
-
-  // ======================
-  // LISTAR (GET)
-  // ======================
-  if (req.method === 'GET') {
-    try {
-      const products = await prisma.product.findMany({
-        orderBy: { createdAt: 'desc' }
-      })
-
-      return res.json(products)
-    } catch (err) {
-      console.error(err)
-      return res.status(500).json({ error: 'Erro ao listar produtos' })
-    }
+  if (req.method !== 'POST') {
+    return res.status(405).json({ error: 'Method not allowed' })
   }
 
-  // ======================
-  // CRIAR (POST)
-  // ======================
-  if (req.method === 'POST') {
-    try {
-      const { name, description, price, images } = req.body
+  try {
+    const { email, password } = req.body
 
-      if (!name || !price || !images || images.length === 0) {
-        return res.status(400).json({
-          error: 'Campos obrigatórios: name, price, images'
-        })
-      }
+    const admin = await prisma.admin.findUnique({
+      where: { email }
+    })
 
-      const product = await prisma.product.create({
-        data: {
-          name,
-          description,
-          price: Number(price),
-          images
-        }
-      })
-
-      return res.status(201).json(product)
-    } catch (err) {
-      console.error(err)
-      return res.status(500).json({ error: 'Erro ao criar produto' })
+    if (!admin) {
+      return res.status(401).json({ error: 'Credenciais inválidas' })
     }
-  }
 
-  // ======================
-  // ATUALIZAR (PUT)
-  // ======================
-  if (req.method === 'PUT') {
-    try {
-      const { id } = req.query
-      const { name, description, price, images } = req.body
+    const valid = await bcrypt.compare(password, admin.password)
 
-      const product = await prisma.product.update({
-        where: { id },
-        data: {
-          name,
-          description,
-          price: Number(price),
-          images
-        }
-      })
-
-      return res.json(product)
-    } catch (err) {
-      console.error(err)
-      return res.status(500).json({ error: 'Erro ao atualizar produto' })
+    if (!valid) {
+      return res.status(401).json({ error: 'Credenciais inválidas' })
     }
+
+    const token = jwt.sign(
+      { id: admin.id, email: admin.email },
+      process.env.JWT_SECRET,
+      { expiresIn: '1d' }
+    )
+
+    return res.status(200).json({ token })
+  } catch (err) {
+    console.error(err)
+    return res.status(500).json({ error: 'Erro interno' })
   }
-
-  // ======================
-  // EXCLUIR (DELETE)
-  // ======================
-  if (req.method === 'DELETE') {
-    const { id } = req.query
-
-    try {
-      await prisma.product.delete({
-        where: { id }
-      })
-
-      return res.json({ success: true })
-    } catch (err) {
-      console.error(err)
-      return res.status(500).json({
-        error: 'Erro ao excluir produto'
-      })
-    }
-  }
-
-  // ======================
-  // FALLBACK
-  // ======================
-  return res.status(405).json({ error: 'Method not allowed' })
 }
