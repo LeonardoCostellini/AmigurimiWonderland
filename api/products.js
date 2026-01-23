@@ -2,7 +2,7 @@ const { PrismaClient } = require('@prisma/client')
 
 const prisma = new PrismaClient()
 
-module.exports = async function handler(req, res) {
+export default async function handler(req, res){
 
   // ======================
   // LISTAR (GET)
