@@ -1,9 +1,16 @@
+const { Pool } = require('@neondatabase/serverless')
+
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  ssl: true
+})
+
 module.exports = async (req, res) => {
   try {
-    return res.json({
-      hasDatabaseUrl: !!process.env.DATABASE_URL
-    })
+    const result = await pool.query('SELECT 1')
+    return res.json({ db: 'connected', result: result.rows })
   } catch (err) {
-    return res.status(500).json({ error: 'fail' })
+    console.error('DB CONNECT ERROR:', err)
+    return res.status(500).json({ error: 'db error' })
   }
 }
