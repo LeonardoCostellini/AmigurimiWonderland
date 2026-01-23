@@ -55,8 +55,8 @@ const productsData = [
     description: "Pikachu em amigurumi, o favorito de todos!",
     price: 90.00,
     images: [
-      "https://images.squarespace-cdn.com/content/v1/61c92b509f71241773e1d4dc/1640988898004-VO5NFU75F6QRHDM98PG0/20180619_112940.jpg",
-      "https://images.squarespace-cdn.com/content/v1/61c92b509f71241773e1d4dc/1640988898004-VO5NFU75F6QRHDM98PG0/20180619_112940.jpg",
+      "https://i.pinimg.com/736x/84/5f/75/845f7568cbb88293b85a3202e2c0c140.jpg",
+      "https://img.elo7.com.br/product/zoom/4D7266D/receita-pdf-pikachu-amigurumi-pokemon-amigurumi.jpg",
       "https://images.squarespace-cdn.com/content/v1/61c92b509f71241773e1d4dc/1640988898004-VO5NFU75F6QRHDM98PG0/20180619_112940.jpg"
     ],
     featured: false
@@ -100,7 +100,7 @@ const productsData = [
 
   {
     name: "Psydeck (Pokemon)",
-    category: "Pokemon",
+    category: "Pokémon",
     description: "Psyduck é um Pokémon do tipo Água (número 23) da primeira geração, conhecido por sua aparência amarela semelhante a um pato ou ornitorrinco e por sofrer de dores de cabeça crônicas",
     price: 60.00,
     images: [
