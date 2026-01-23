@@ -55,3 +55,4 @@ async function verificarEstrutura() {
 }
 
 verificarEstrutura();
+
