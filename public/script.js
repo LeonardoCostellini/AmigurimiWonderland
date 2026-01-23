@@ -1,6 +1,7 @@
 // ==================== VARIÁVEIS GLOBAIS ====================
 let cart = []
 let currentCategory = "Todos"
+window.__products = []
 
 // ==================== SPLASH SCREEN ====================
 window.addEventListener('DOMContentLoaded', () => {
@@ -109,6 +110,8 @@ function updateCart() {
   const cartFooter = document.getElementById('cartFooter')
   const totalPrice = document.getElementById('totalPrice')
 
+  if (!emptyCart || !cartItems || !cartFooter || !totalPrice) return
+
   if (cart.length === 0) {
     emptyCart.style.display = 'flex'
     cartItems.style.display = 'none'
@@ -156,52 +159,68 @@ async function carregarProdutos() {
   const container = document.getElementById('productsGrid')
   if (!container) return
 
-  const res = await fetch('/api/products')
-  const produtos = await res.json()
+  try {
+    const res = await fetch('/api/products')
 
-  container.innerHTML = ''
+    if (!res.ok) {
+      throw new Error(`Erro API: ${res.status}`)
+    }
 
-  produtos.forEach((p, index) => {
-    // garante array de imagens
-    const images = p.images && p.images.length
-      ? p.images
-      : [p.imageUrl, p.imageUrl, p.imageUrl]
+    const produtos = await res.json()
 
-    container.innerHTML += `
-      <article class="product-card"
-        onclick="openProductModal(${index})">
+    container.innerHTML = ''
 
-        <div class="product-image">
-          <img src="${images[0]}" alt="${p.name}">
-        </div>
+    produtos.forEach((p, index) => {
+      const images = p.images && p.images.length
+        ? p.images
+        : [p.imageUrl, p.imageUrl, p.imageUrl]
 
-        <div class="product-info">
-          <h3>${p.name}</h3>
-          <p class="product-description">${p.description}</p>
+      container.innerHTML += `
+        <article class="product-card"
+          onclick="openProductModal(${index})">
 
-          <div class="product-footer">
-            <span class="product-price">
-              R$ ${Number(p.price).toFixed(2)}
-            </span>
-
-            <button class="buy-btn"
-              onclick="event.stopPropagation();
-              addToCart('${p.name}', ${p.price}, '${images[0]}')">
-              Comprar
-            </button>
+          <div class="product-image">
+            <img src="${images[0]}" alt="${p.name}">
           </div>
-        </div>
-      </article>
-    `
-  })
 
-  window.__products = produtos
+          <div class="product-info">
+            <h3>${p.name}</h3>
+            <p class="product-description">${p.description}</p>
+
+            <div class="product-footer">
+              <span class="product-price">
+                R$ ${Number(p.price).toFixed(2)}
+              </span>
+
+              <button class="buy-btn"
+                onclick="event.stopPropagation();
+                addToCart('${p.name}', ${p.price}, '${images[0]}')">
+                Comprar
+              </button>
+            </div>
+          </div>
+        </article>
+      `
+    })
+
+    window.__products = produtos
+
+  } catch (err) {
+    console.error("Erro ao carregar produtos:", err)
+    container.innerHTML = `
+      <p style="color:red;text-align:center;">
+        ❌ Falha ao carregar produtos no Vercel.
+      </p>
+    `
+  }
 }
 
+// ==================== MODAL ====================
 function openProductModal(index) {
   const product = window.__products[index]
-  const modal = document.getElementById('productModal')
+  if (!product) return
 
+  const modal = document.getElementById('productModal')
   modal.classList.add('show')
 
   document.getElementById('modalTitle').textContent = product.name
@@ -241,5 +260,5 @@ function openProductModal(index) {
 }
 
 function closeProductModal() {
-  document.getElementById('productModal').classList.remove('show')
+  document.getElementById('productModal')?.classList.remove('show')
 }
