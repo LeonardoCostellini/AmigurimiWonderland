@@ -1,10 +1,10 @@
-import { PrismaClient } from '@prisma/client'
-import bcrypt from 'bcrypt'
-import jwt from 'jsonwebtoken'
+const { PrismaClient } = require('@prisma/client')
+const bcrypt = require('bcrypt')
+const jwt = require('jsonwebtoken')
 
 const prisma = new PrismaClient()
 
-export default async function handler(req, res) {
+module.exports = async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' })
   }
