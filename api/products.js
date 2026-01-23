@@ -7,10 +7,15 @@ const pool = new Pool({
 
 module.exports = async (req, res) => {
   try {
-    const result = await pool.query('SELECT 1')
-    return res.json({ db: 'connected', result: result.rows })
+    const { rows } = await pool.query(`
+      SELECT id, name, description, price, images
+      FROM products
+      LIMIT 5
+    `)
+
+    return res.json(rows)
   } catch (err) {
-    console.error('DB CONNECT ERROR:', err)
-    return res.status(500).json({ error: 'db error' })
+    console.error('SQL ERROR:', err)
+    return res.status(500).json({ error: err.message })
   }
 }
