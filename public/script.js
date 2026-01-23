@@ -52,7 +52,7 @@ const productsData = [
   {
     name: "Pikachu",
     category: "Pokémon",
-    description: "Pikachu em amigurumi, o favorito de todos!",
+    description: "Pikachu é um pequeno Pokémon roedor do tipo Elétrico (1ª Geração), famoso por sua pelagem amarela, orelhas longas com pontas pretas e cauda em formato de raio. ",
     price: 90.00,
     images: [
       "https://i.pinimg.com/736x/84/5f/75/845f7568cbb88293b85a3202e2c0c140.jpg",
