@@ -1,0 +1,62 @@
+/* ================= ADMIN PANEL UI (BASEADO NO CSS ENVIADO) ================= */
+.card h3 {
+font-size: 1.1rem;
+margin-bottom: 8px;
+}
+
+
+.card p {
+font-size: .9rem;
+color: var(--muted);
+margin-bottom: 10px;
+}
+
+
+.card strong {
+font-size: 1.1rem;
+}
+
+
+.card-actions {
+display: flex;
+gap: 10px;
+margin-top: 14px;
+}
+
+
+.btn-edit {
+flex: 1;
+background: var(--blue);
+color: #fff;
+padding: 10px;
+border-radius: 999px;
+}
+
+
+.btn-delete {
+flex: 1;
+background: var(--red);
+color: #fff;
+padding: 10px;
+border-radius: 999px;
+}
+
+
+/* ================= ANIMATIONS ================= */
+@keyframes fadeUp {
+from { opacity: 0; transform: translateY(20px); }
+to { opacity: 1; transform: translateY(0); }
+}
+
+
+/* ================= RESPONSIVE ================= */
+@media(max-width:768px){
+.tabs { padding: 16px; }
+#content { padding: 0 16px 24px; }
+}
+body { font-family: Poppins, sans-serif; background: #fffaf2; }
+.login-card { width:360px; margin:100px auto; padding:30px; background:#fff; border-radius:16px; }
+button { background:#ffbf00; border:none; padding:14px; border-radius:999px; }
+.topbar { padding:20px; font-weight:bold; }
+.tabs button { margin-right:10px; }
+.card { background:#fff; border-radius:18px; padding:16px; }
