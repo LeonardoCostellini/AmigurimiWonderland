@@ -1,19 +1,40 @@
+<script>
+if (!localStorage.getItem('token')) {
+  window.location.href = '/login.html'
+}
+</script>
+
 <!DOCTYPE html>
-<html>
+<html lang="pt-BR">
 <head>
-<link rel="stylesheet" href="css/style.css">
+  <meta charset="UTF-8" />
+  <title>Dashboard | Amigurimi</title>
+  <link rel="stylesheet" href="dashborad.css" />
 </head>
 <body>
-<header class="topbar">Painel Administrativo</header>
+
+  <h1>Painel Administrativo</h1>
+
+<form id="productForm">
+  <input type="text" id="name" placeholder="Nome" required>
+
+  <input type="text" id="imageUrl1" placeholder="Imagem 1 (principal)" required>
+  <input type="text" id="imageUrl2" placeholder="Imagem 2">
+  <input type="text" id="imageUrl3" placeholder="Imagem 3">
+
+  <textarea id="description" placeholder="Descrição"></textarea>
+
+  <input type="number" id="price" step="0.01" placeholder="Preço" required>
+
+  <button type="submit">Salvar</button>
+</form>
 
 
-<div class="tabs">
-<button onclick="loadProducts()">Produtos</button>
-<button onclick="loadCategories()">Categorias</button>
-</div>
+<h2>Produtos cadastrados</h2>
+<div id="products" class="products-grid"></div>
 
 
-<main id="content"></main>
-<script src="js/app.js"></script>
+
+  <script src="dashboard.js" defer></script>
 </body>
 </html>

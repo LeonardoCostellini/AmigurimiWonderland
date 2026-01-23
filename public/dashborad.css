@@ -1,0 +1,107 @@
+body {
+  font-family: Arial, sans-serif;
+  background: #f4f6f8;
+  padding: 30px;
+}
+
+h1, h2 {
+  margin-bottom: 20px;
+}
+
+/* ===== FORM ===== */
+form {
+  background: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  max-width: 600px;
+  margin-bottom: 40px;
+  box-shadow: 0 2px 8px rgba(0,0,0,.08);
+}
+
+form input,
+form textarea,
+form button {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+}
+
+form button {
+  background: #4f46e5;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+form button:hover {
+  opacity: 0.9;
+}
+
+/* ===== GRID ===== */
+.products-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 20px;
+}
+
+/* ===== CARD ===== */
+.card {
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,.08);
+  overflow: hidden;
+}
+
+/* ===== IMAGENS ===== */
+.card-images {
+  display: flex;
+  gap: 5px;
+  padding: 10px;
+}
+
+.card-images img {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 6px;
+  border: 1px solid #ddd;
+}
+
+/* ===== CONTEÚDO ===== */
+.card-body {
+  padding: 10px 15px 15px;
+}
+
+.card-body h3 {
+  margin: 5px 0;
+  font-size: 16px;
+}
+
+.price {
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+/* ===== AÇÕES ===== */
+.actions {
+  display: flex;
+  gap: 10px;
+}
+
+.actions button {
+  flex: 1;
+  padding: 8px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.actions .edit {
+  background: #facc15;
+}
+
+.actions .delete {
+  background: #ef4444;
+  color: white;
+}
