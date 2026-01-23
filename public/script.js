@@ -96,8 +96,24 @@ const productsData = [
       "https://images.squarespace-cdn.com/content/v1/61c92b509f71241773e1d4dc/1640988898004-VO5NFU75F6QRHDM98PG0/20180619_112940.jpg"
     ],
     featured: false
+  },
+
+  {
+    name: "Psydeck (Pokemon)",
+    category: "Pokemon",
+    description: "Psyduck é um Pokémon do tipo Água (número 23) da primeira geração, conhecido por sua aparência amarela semelhante a um pato ou ornitorrinco e por sofrer de dores de cabeça crônicas",
+    price: 60.00,
+    images: [
+      "https://cdn.ribblr.com/pics/45001/cover-2ks7bdv20n.jpg",
+      "https://cdn.ribblr.com/pics/45001/cover-2ks7fg1ost.jpg",
+      "https://images.squarespace-cdn.com/content/v1/61c92b509f71241773e1d4dc/1640988898004-VO5NFU75F6QRHDM98PG0/20180619_112940.jpg"
+    ],
+    featured: false
   }
+
 ];
+
+
 
 // ==================== VARIÁVEIS GLOBAIS ====================
 let cart = [];
