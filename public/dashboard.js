@@ -24,12 +24,15 @@ function getToken() {
 // ================= LISTAR =================
 async function loadProducts() {
   const res = await fetch('/api/products')
-  const data = await res.json()
 
   if (!res.ok) {
-    alert(data.error || 'Erro ao carregar produtos')
+    const text = await res.text()
+    console.error('Erro API:', text)
+    alert('Erro ao carregar produtos')
     return
   }
+
+  const data = await res.json()
 
   productsDiv.innerHTML = ''
 
@@ -37,15 +40,15 @@ async function loadProducts() {
     productsDiv.innerHTML += `
       <div class="card">
         <div class="card-images">
-          ${(p.images || []).map(img => `<img src="${img}">`).join('')}
+          ${(p.images || []).map(img => `<img src="${img}" alt="${p.name}">`).join('')}
         </div>
 
         <h3>${p.name}</h3>
         <p>${p.description || ''}</p>
         <p>R$ ${Number(p.price).toFixed(2)}</p>
 
-        <button onclick="editProduct(${p.id})">Editar</button>
-        <button onclick="deleteProduct(${p.id})">Excluir</button>
+        <button onclick="editProduct('${p.id}')">Editar</button>
+        <button onclick="deleteProduct('${p.id}')">Excluir</button>
       </div>
     `
   })
@@ -56,10 +59,18 @@ form.addEventListener('submit', async e => {
   e.preventDefault()
 
   const images = [
-    imageUrl1.value,
-    imageUrl2.value,
-    imageUrl3.value
+    imageUrl1.value.trim(),
+    imageUrl2.value.trim(),
+    imageUrl3.value.trim()
   ].filter(Boolean)
+
+  if (!nameInput.value.trim()) {
+    return alert('Nome é obrigatório')
+  }
+
+  if (images.length === 0) {
+    return alert('Informe pelo menos uma URL de imagem')
+  }
 
   const data = {
     name: nameInput.value.trim(),
