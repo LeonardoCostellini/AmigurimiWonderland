@@ -1,27 +1,47 @@
 const { Pool } = require('@neondatabase/serverless')
+const jwt = require('jsonwebtoken')
 
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
   ssl: true
 })
 
+function auth(req, res) {
+  const header = req.headers.authorization
+
+  if (!header) {
+    res.status(401).json({ error: 'Token não enviado' })
+    return null
+  }
+
+  const token = header.split(' ')[1]
+
+  try {
+    return jwt.verify(token, process.env.JWT_SECRET)
+  } catch (err) {
+    console.error('JWT ERROR:', err)
+    res.status(401).json({ error: 'Token inválido' })
+    return null
+  }
+}
+
 module.exports = async (req, res) => {
   try {
-    // ======================
-    // LISTAR (GET)
-    // ======================
+    const user = auth(req, res)
+    if (!user) return
+
+    // ================= LISTAR =================
     if (req.method === 'GET') {
       const { rows } = await pool.query(`
         SELECT id, name, description, price, images
         FROM products
-        ORDER BY created_at DESC
+        ORDER BY "createdAt" DESC
       `)
+
       return res.status(200).json(rows)
     }
 
-    // ======================
-    // CRIAR (POST)
-    // ======================
+    // ================= CRIAR =================
     if (req.method === 'POST') {
       const { name, description, price, images } = req.body || {}
 
@@ -38,14 +58,12 @@ module.exports = async (req, res) => {
       return res.status(201).json(rows[0])
     }
 
-    // ======================
-    // ATUALIZAR (PUT)
-    // ======================
+    // ================= ATUALIZAR =================
     if (req.method === 'PUT') {
       const { id } = req.query
-      const { name, description, price, images } = req.body || {}
-
       if (!id) return res.status(400).json({ error: 'ID obrigatório' })
+
+      const { name, description, price, images } = req.body || {}
 
       const { rows } = await pool.query(`
         UPDATE products
@@ -61,9 +79,7 @@ module.exports = async (req, res) => {
       return res.status(200).json(rows[0])
     }
 
-    // ======================
-    // EXCLUIR (DELETE)
-    // ======================
+    // ================= EXCLUIR =================
     if (req.method === 'DELETE') {
       const { id } = req.query
       if (!id) return res.status(400).json({ error: 'ID obrigatório' })
@@ -75,7 +91,7 @@ module.exports = async (req, res) => {
     return res.status(405).json({ error: 'Method not allowed' })
 
   } catch (err) {
-    console.error('PRODUCT API ERROR:', err)
-    res.status(500).json({ error: 'Erro interno' })
+    console.error('PRODUCTS API FATAL ERROR:', err)
+    return res.status(500).json({ error: 'Erro interno' })
   }
 }
