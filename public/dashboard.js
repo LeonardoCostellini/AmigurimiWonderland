@@ -4,6 +4,7 @@ const productsDiv = document.getElementById('products')
 const nameInput = document.getElementById('name')
 const descriptionInput = document.getElementById('description')
 const priceInput = document.getElementById('price')
+const categoryInput = document.getElementById('category')
 
 const imageUrl1 = document.getElementById('imageUrl1')
 const imageUrl2 = document.getElementById('imageUrl2')
@@ -12,26 +13,12 @@ const imageUrl3 = document.getElementById('imageUrl3')
 let editingId = null
 
 function getToken() {
-  const token = localStorage.getItem('token')
-  if (!token) {
-    alert('Sessão expirada')
-    window.location.href = '/login.html'
-    throw new Error('No token')
-  }
-  return token
+  return localStorage.getItem('token')
 }
 
 // ================= LISTAR =================
 async function loadProducts() {
   const res = await fetch('/api/products')
-
-  if (!res.ok) {
-    const text = await res.text()
-    console.error('Erro API:', text)
-    alert('Erro ao carregar produtos')
-    return
-  }
-
   const data = await res.json()
 
   productsDiv.innerHTML = ''
@@ -39,14 +26,10 @@ async function loadProducts() {
   data.forEach(p => {
     productsDiv.innerHTML += `
       <div class="card">
-        <div class="card-images">
-          ${(p.images || []).map(img => `<img src="${img}" alt="${p.name}">`).join('')}
-        </div>
-
+        ${(p.images || []).map(img => `<img src="${img}">`).join('')}
         <h3>${p.name}</h3>
-        <p>${p.description || ''}</p>
-        <p>R$ ${Number(p.price).toFixed(2)}</p>
-
+        <p>${p.category}</p>
+        <p>R$ ${p.price}</p>
         <button onclick="editProduct('${p.id}')">Editar</button>
         <button onclick="deleteProduct('${p.id}')">Excluir</button>
       </div>
@@ -54,47 +37,35 @@ async function loadProducts() {
   })
 }
 
-// ================= SALVAR / EDITAR =================
+// ================= SALVAR =================
 form.addEventListener('submit', async e => {
   e.preventDefault()
 
   const images = [
-    imageUrl1.value.trim(),
-    imageUrl2.value.trim(),
-    imageUrl3.value.trim()
+    imageUrl1.value,
+    imageUrl2.value,
+    imageUrl3.value
   ].filter(Boolean)
 
-  if (!nameInput.value.trim()) {
-    return alert('Nome é obrigatório')
-  }
-
-  if (images.length === 0) {
-    return alert('Informe pelo menos uma URL de imagem')
-  }
-
   const data = {
-    name: nameInput.value.trim(),
-    description: descriptionInput.value.trim(),
+    name: nameInput.value,
+    description: descriptionInput.value,
     price: Number(priceInput.value),
+    category: categoryInput.value,
     images
   }
 
-  const method = editingId ? 'PUT' : 'POST'
-  const url = editingId
-    ? `/api/products?id=${editingId}`
-    : '/api/products'
-
-  const res = await fetch(url, {
-    method,
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${getToken()}`
-    },
-    body: JSON.stringify(data)
-  })
-
-  const result = await res.json()
-  if (!res.ok) return alert(result.error)
+  const res = await fetch(
+    editingId ? `/api/products?id=${editingId}` : '/api/products',
+    {
+      method: editingId ? 'PUT' : 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${getToken()}`
+      },
+      body: JSON.stringify(data)
+    }
+  )
 
   form.reset()
   editingId = null
@@ -105,15 +76,14 @@ form.addEventListener('submit', async e => {
 async function editProduct(id) {
   const res = await fetch('/api/products')
   const products = await res.json()
-
-  const p = products.find(p => p.id === id)
-  if (!p) return
+  const p = products.find(p => p.id == id)
 
   editingId = id
 
   nameInput.value = p.name
-  descriptionInput.value = p.description || ''
+  descriptionInput.value = p.description
   priceInput.value = p.price
+  categoryInput.value = p.category
 
   imageUrl1.value = p.images?.[0] || ''
   imageUrl2.value = p.images?.[1] || ''
@@ -122,17 +92,12 @@ async function editProduct(id) {
 
 // ================= EXCLUIR =================
 async function deleteProduct(id) {
-  if (!confirm('Excluir produto?')) return
-
-  const res = await fetch(`/api/products?id=${id}`, {
+  await fetch(`/api/products?id=${id}`, {
     method: 'DELETE',
     headers: {
       Authorization: `Bearer ${getToken()}`
     }
   })
-
-  const result = await res.json()
-  if (!res.ok) return alert(result.error)
 
   loadProducts()
 }

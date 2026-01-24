@@ -1,37 +1,19 @@
-const { Pool, neonConfig } = require('@neondatabase/serverless')
+const { Pool } = require('@neondatabase/serverless')
 const jwt = require('jsonwebtoken')
-const ws = require('ws')
-
-neonConfig.webSocketConstructor = ws
 
 const pool = new Pool({
-  connectionString: process.env.DATABASE_URL
+  connectionString: process.env.DATABASE_URL,
+  ssl: true
 })
 
-// ======================
-// AUTH
-// ======================
 function auth(req) {
   const header = req.headers.authorization
   if (!header) return null
 
   try {
-    const token = header.split(' ')[1]
-    return jwt.verify(token, process.env.JWT_SECRET)
+    return jwt.verify(header.split(' ')[1], process.env.JWT_SECRET)
   } catch {
     return null
-  }
-}
-
-// ======================
-// UTIL URL
-// ======================
-function isValidUrl(url) {
-  try {
-    new URL(url)
-    return true
-  } catch {
-    return false
   }
 }
 
@@ -39,14 +21,19 @@ module.exports = async (req, res) => {
   try {
 
     // ======================
-    // LISTAR (PÚBLICO)
+    // GET (PÚBLICO)
     // ======================
     if (req.method === 'GET') {
-      const { rows } = await pool.query(`
-        SELECT id, name, description, price, images
-        FROM products
-        ORDER BY id DESC
-      `)
+      const { category } = req.query
+
+      const { rows } = category
+        ? await pool.query(
+            `SELECT * FROM products WHERE category = $1 ORDER BY id DESC`,
+            [category]
+          )
+        : await pool.query(
+            `SELECT * FROM products ORDER BY id DESC`
+          )
 
       return res.status(200).json(rows)
     }
@@ -58,99 +45,66 @@ module.exports = async (req, res) => {
     }
 
     // ======================
-    // CRIAR
+    // POST
     // ======================
     if (req.method === 'POST') {
-      if (typeof req.body === 'string') {
-        req.body = JSON.parse(req.body)
-      }
+      const { name, description, price, images, category } = req.body || {}
 
-      const { name, description, price, images } = req.body || {}
-
-      if (
-        typeof name !== 'string' ||
-        !name.trim() ||
-        typeof price !== 'number' ||
-        !Array.isArray(images) ||
-        images.length === 0
-      ) {
+      if (!name || !price || !Array.isArray(images)) {
         return res.status(400).json({ error: 'Dados inválidos' })
       }
 
-      if (!images.every(isValidUrl)) {
-        return res.status(400).json({
-          error: 'Todas as imagens devem ser URLs válidas'
-        })
-      }
-
-      const { rows } = await pool.query(
-        `
-        INSERT INTO products (name, description, price, images)
-        VALUES ($1, $2, $3, $4)
-        RETURNING id, name, description, price, images
-        `,
-        [
-          name.trim(),
-          description || '',
-          price,
-          images // 👈 SEM CAST
-        ]
-      )
+      const { rows } = await pool.query(`
+        INSERT INTO products (name, description, price, images, category)
+        VALUES ($1, $2, $3, $4::text[], $5)
+        RETURNING *
+      `, [
+        name.trim(),
+        description || '',
+        Number(price),
+        images,
+        category || 'Geral'
+      ])
 
       return res.status(201).json(rows[0])
     }
 
     // ======================
-    // ATUALIZAR
+    // PUT
     // ======================
     if (req.method === 'PUT') {
-      if (typeof req.body === 'string') {
-        req.body = JSON.parse(req.body)
-      }
-
       const { id } = req.query
-      if (!id) {
-        return res.status(400).json({ error: 'ID obrigatório' })
-      }
+      if (!id) return res.status(400).json({ error: 'ID obrigatório' })
 
-      const { name, description, price, images } = req.body || {}
+      const { name, description, price, images, category } = req.body || {}
 
-      if (images && !images.every(isValidUrl)) {
-        return res.status(400).json({
-          error: 'Images devem ser URLs válidas'
-        })
-      }
-
-      const { rows } = await pool.query(
-        `
+      const { rows } = await pool.query(`
         UPDATE products SET
           name = COALESCE($1, name),
           description = COALESCE($2, description),
           price = COALESCE($3, price),
-          images = COALESCE($4, images)
-        WHERE id = $5
-        RETURNING id, name, description, price, images
-        `,
-        [
-          name ?? null,
-          description ?? null,
-          price ?? null,
-          images ?? null,
-          id
-        ]
-      )
+          images = COALESCE($4::text[], images),
+          category = COALESCE($5, category)
+        WHERE id = $6
+        RETURNING *
+      `, [
+        name ?? null,
+        description ?? null,
+        price ?? null,
+        images ?? null,
+        category ?? null,
+        id
+      ])
 
       return res.status(200).json(rows[0])
     }
 
     // ======================
-    // EXCLUIR
+    // DELETE
     // ======================
     if (req.method === 'DELETE') {
       const { id } = req.query
-      if (!id) {
-        return res.status(400).json({ error: 'ID obrigatório' })
-      }
+      if (!id) return res.status(400).json({ error: 'ID obrigatório' })
 
       await pool.query(`DELETE FROM products WHERE id = $1`, [id])
       return res.status(200).json({ success: true })
@@ -159,10 +113,7 @@ module.exports = async (req, res) => {
     return res.status(405).json({ error: 'Method not allowed' })
 
   } catch (err) {
-    console.error('🔥 PRODUCTS API ERROR:', err)
-    return res.status(500).json({
-      error: 'Erro interno',
-      message: err.message
-    })
+    console.error('API ERROR:', err)
+    return res.status(500).json({ error: err.message })
   }
 }
