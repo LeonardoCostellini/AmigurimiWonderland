@@ -1,3 +1,7 @@
+const { Pool, neonConfig } = require('@neondatabase/serverless')
+const ws = require('ws')
+
+neonConfig.webSocketConstructor = ws
 const form = document.getElementById('productForm')
 const productsDiv = document.getElementById('products')
 
