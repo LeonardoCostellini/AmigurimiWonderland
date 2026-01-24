@@ -3,10 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <title>Dashboard | Amigurimi</title>
+
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="icon" type="image/png" sizes="32x32" href="img/favicon.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="img/favicon.png">
-  <link rel="apple-touch-icon" sizes="180x180" href="img/favicon.png">
+  <link rel="icon" type="image/png" href="img/favicon.png">
 
   <style>
     :root {
@@ -19,20 +18,15 @@
       --border: #EDEDED;
       --bg: #FFFDF7;
     }
-    
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-    
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
     body {
       font-family: 'Poppins', sans-serif;
       background: var(--bg);
       color: var(--text);
-      padding: 0;
     }
-    
+
     /* HEADER */
     .header {
       padding: 20px 40px;
@@ -42,26 +36,12 @@
       justify-content: space-between;
       align-items: center;
     }
-    
+
     .header-title {
-      display: flex;
-      align-items: center;
-      gap: 10px;
       font-size: 22px;
       font-weight: 600;
     }
-    
-    .success-badge {
-      background: #D4EDDA;
-      color: #155724;
-      padding: 10px 20px;
-      border-radius: 10px;
-      font-size: 14px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    
+
     /* TABS */
     .tabs {
       padding: 20px 40px;
@@ -70,75 +50,27 @@
       background: white;
       border-bottom: 1px solid var(--border);
     }
-    
+
     .tab {
       padding: 12px 24px;
+      border-radius: 50px;
       border: 1px solid var(--border);
       background: white;
-      border-radius: 50px;
-      font-size: 14px;
-      font-weight: 500;
       cursor: pointer;
-      transition: all 0.3s;
-      font-family: 'Poppins', sans-serif;
-      color: var(--text);
-      display: flex;
-      align-items: center;
-      gap: 8px;
+      font-weight: 500;
     }
-    
-    .tab:hover {
-      background: #FFF8DC;
-      border-color: var(--yellow);
-    }
-    
+
     .tab.active {
       background: var(--yellow);
       border-color: var(--yellow);
       font-weight: 600;
-      box-shadow: 0 4px 12px rgba(255, 193, 7, 0.3);
     }
-    
+
     /* CONTENT */
     .content {
       padding: 30px 40px;
     }
-    
-    .section-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 30px;
-    }
-    
-    .section-header h2 {
-      font-size: 26px;
-      font-weight: 700;
-    }
-    
-    .btn-add {
-      background: var(--yellow);
-      color: var(--text);
-      padding: 12px 24px;
-      border: none;
-      border-radius: 50px;
-      font-size: 14px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.3s;
-      font-family: 'Poppins', sans-serif;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      box-shadow: 0 4px 12px rgba(255, 193, 7, 0.3);
-    }
-    
-    .btn-add:hover {
-      background: var(--yellow-hover);
-      transform: translateY(-2px);
-      box-shadow: 0 6px 16px rgba(255, 193, 7, 0.4);
-    }
-    
+
     /* FORM */
     form {
       max-width: 600px;
@@ -146,180 +78,106 @@
       padding: 30px;
       border-radius: 20px;
       margin-bottom: 40px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
     }
-    
+
     form input,
     form textarea {
       width: 100%;
-      padding: 14px 16px;
-      margin-bottom: 15px;
+      padding: 14px;
+      margin-bottom: 14px;
       border-radius: 12px;
       border: 1px solid var(--border);
-      font-size: 14px;
       font-family: 'Poppins', sans-serif;
-      transition: all 0.3s;
-      background: #FAFAFA;
     }
-    
-    form input:focus,
-    form textarea:focus {
-      outline: none;
-      border-color: var(--yellow);
-      background: white;
-      box-shadow: 0 0 0 3px rgba(255, 193, 7, 0.1);
-    }
-    
+
     form button {
-      background: var(--yellow);
-      color: var(--text);
-      border: none;
-      padding: 14px 28px;
+      width: 100%;
+      padding: 14px;
       border-radius: 50px;
-      font-size: 15px;
+      border: none;
+      background: var(--yellow);
       font-weight: 600;
       cursor: pointer;
-      transition: all 0.3s;
-      font-family: 'Poppins', sans-serif;
-      width: 100%;
     }
-    
-    form button:hover {
-      background: var(--yellow-hover);
-      transform: translateY(-2px);
-    }
-    
-    /* PRODUCTS GRID */
+
+    /* GRID */
     .products-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
       gap: 24px;
     }
-    
+
     /* CARD */
     .card {
       background: white;
       border-radius: 20px;
       overflow: hidden;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-      transition: all 0.3s;
-      animation: fadeUp 0.4s ease;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      transition: 0.3s;
     }
-    
+
     .card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+      transform: translateY(-4px);
     }
-    
-    .card-image {
+
+    .card-main-image {
       width: 100%;
       height: 220px;
       object-fit: cover;
-      background: #F8F8F8;
+      cursor: pointer;
+      background: #f5f5f5;
     }
-    
+
     .card-content {
       padding: 20px;
     }
-    
-    .card h3 {
-      font-size: 18px;
-      font-weight: 600;
+
+    .card-content h3 {
       margin-bottom: 8px;
-      color: var(--text);
     }
-    
-    .card p {
-      font-size: 14px;
-      color: var(--muted);
-      line-height: 1.5;
-      margin-bottom: 12px;
-    }
-    
-    .card-price {
-      font-size: 20px;
-      font-weight: 700;
-      color: var(--yellow);
-      margin-bottom: 4px;
-      display: block;
-    }
-    
-    .card-stock {
-      font-size: 13px;
-      color: var(--muted);
-      margin-bottom: 16px;
-      display: block;
-    }
-    
-    /* ACTIONS */
+
     .card-actions {
       display: flex;
       gap: 10px;
       margin-top: 16px;
     }
-    
+
     .btn-edit {
       flex: 1;
       background: var(--blue);
       color: white;
-      padding: 10px 16px;
       border: none;
+      padding: 10px;
       border-radius: 50px;
-      font-size: 13px;
-      font-weight: 600;
       cursor: pointer;
-      transition: all 0.3s;
-      font-family: 'Poppins', sans-serif;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
     }
-    
-    .btn-edit:hover {
-      background: #4338CA;
-      transform: translateY(-2px);
-    }
-    
+
     .btn-delete {
       flex: 1;
       background: var(--red);
       color: white;
-      padding: 10px 16px;
       border: none;
+      padding: 10px;
       border-radius: 50px;
-      font-size: 13px;
-      font-weight: 600;
       cursor: pointer;
-      transition: all 0.3s;
-      font-family: 'Poppins', sans-serif;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
     }
-    
-    .btn-delete:hover {
-      background: #DC2626;
-      transform: translateY(-2px);
-    }
-    
+
     /* MODAL */
     .modal-overlay {
       position: fixed;
       inset: 0;
-      background: rgba(0, 0, 0, 0.6);
+      background: rgba(0,0,0,0.6);
       display: none;
       align-items: center;
       justify-content: center;
       z-index: 9999;
-      animation: fadeIn 0.3s ease;
     }
-    
+
     .modal-overlay.show {
       display: flex;
     }
-    
+
     .modal {
       background: white;
       border-radius: 24px;
@@ -327,51 +185,30 @@
       width: 90%;
       padding: 30px;
       position: relative;
-      animation: scaleIn 0.3s ease;
     }
-    
+
     .modal-close {
       position: absolute;
       top: 20px;
-      right: 24px;
-      background: var(--border);
+      right: 20px;
+      border: none;
       width: 36px;
       height: 36px;
       border-radius: 50%;
-      border: none;
-      font-size: 18px;
       cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: all 0.3s;
     }
-    
-    .modal-close:hover {
-      background: var(--yellow);
-      transform: scale(1.1);
-    }
-    
-    .modal-product-content {
-      display: flex;
-      gap: 30px;
-    }
-    
-    .modal-images {
-      flex: 1;
-    }
-    
+
     .modal-images img {
       width: 100%;
-      border-radius: 18px;
-      margin-bottom: 12px;
+      border-radius: 16px;
     }
-    
+
     .modal-thumbs {
       display: flex;
       gap: 10px;
+      margin-top: 12px;
     }
-    
+
     .modal-thumbs img {
       width: 70px;
       height: 70px;
@@ -379,71 +216,12 @@
       border-radius: 12px;
       cursor: pointer;
       opacity: 0.6;
-      transition: all 0.3s;
       border: 2px solid transparent;
     }
-    
-    .modal-thumbs img:hover,
+
     .modal-thumbs img.active {
       opacity: 1;
       border-color: var(--yellow);
-    }
-    
-  
-    /* ANIMATIONS */
-    @keyframes fadeUp {
-      from {
-        opacity: 0;
-        transform: translateY(20px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-    
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
-    }
-    
-    @keyframes scaleIn {
-      from {
-        opacity: 0;
-        transform: scale(0.9);
-      }
-      to {
-        opacity: 1;
-        transform: scale(1);
-      }
-    }
-    
-    /* RESPONSIVE */
-    @media (max-width: 768px) {
-      .header,
-      .tabs,
-      .content {
-        padding: 16px 20px;
-      }
-      
-      .tabs {
-        flex-wrap: wrap;
-        gap: 10px;
-      }
-      
-      .products-grid {
-        grid-template-columns: 1fr;
-      }
-      
-      .modal-product-content {
-        flex-direction: column;
-      }
-      
-      .section-header {
-        flex-direction: column;
-        gap: 16px;
-        align-items: flex-start;
-      }
     }
   </style>
 
@@ -455,51 +233,43 @@
 </head>
 
 <body>
-  <!-- HEADER -->
+
   <div class="header">
-    <div class="header-title">
-      🧶 Painel Administrativo
-    </div>
-    <div class="success-badge">
-      ✓ Login realizado com sucesso!
-    </div>
+    <div class="header-title">🧶 Painel Administrativo</div>
   </div>
 
-  <!-- TABS -->
   <div class="tabs">
     <button class="tab active">🏷️ Produtos</button>
     <button class="tab">📑 Categorias</button>
   </div>
 
-  <!-- CONTENT -->
   <div class="content">
-    <div class="section-header">
-      <h2>Gerenciar Produtos</h2>
-    </div>
 
-    <!-- FORM -->
     <form id="productForm">
       <input type="text" id="name" placeholder="Nome" required>
       <input type="text" id="imageUrl1" placeholder="Imagem 1 (principal)" required>
       <input type="text" id="imageUrl2" placeholder="Imagem 2">
       <input type="text" id="imageUrl3" placeholder="Imagem 3">
-      <input type="text" id="category" placeholder="Categoria (ex: Pokémon)">
-      <textarea id="description" placeholder="Descrição" rows="3"></textarea>
+      <input type="text" id="category" placeholder="Categoria">
+      <textarea id="description" placeholder="Descrição"></textarea>
       <input type="number" id="price" step="0.01" placeholder="Preço" required>
       <button type="submit">Salvar</button>
     </form>
 
-    <!-- PRODUCTS GRID -->
     <div id="products" class="products-grid"></div>
   </div>
 
-  <!-- MODAL IMAGENS -->
-<div id="imageModal" class="modal hidden">
-  <div class="modal-content">
-    <span class="close">&times;</span>
-    <div id="modalImages" class="modal-images"></div>
+  <!-- MODAL -->
+  <div id="imageModal" class="modal-overlay">
+    <div class="modal">
+      <button class="modal-close" onclick="closeImageModal()">✕</button>
+
+      <div class="modal-images">
+        <img id="modalMainImage" src="">
+        <div id="modalThumbs" class="modal-thumbs"></div>
+      </div>
+    </div>
   </div>
-</div>
 
   <script src="dashboard.js"></script>
 </body>
