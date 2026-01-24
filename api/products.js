@@ -1,9 +1,12 @@
-const { Pool } = require('@neondatabase/serverless')
+const { Pool, neonConfig } = require('@neondatabase/serverless')
 const jwt = require('jsonwebtoken')
+const ws = require('ws')
+
+// 🔥 OBRIGATÓRIO no Neon Serverless
+neonConfig.webSocketConstructor = ws
 
 const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  ssl: true
+  connectionString: process.env.DATABASE_URL
 })
 
 function auth(req) {
@@ -15,6 +18,18 @@ function auth(req) {
     return jwt.verify(token, process.env.JWT_SECRET)
   } catch {
     return null
+  }
+}
+
+// ======================
+// UTIL: validar URL
+// ======================
+function isValidUrl(url) {
+  try {
+    new URL(url)
+    return true
+  } catch {
+    return false
   }
 }
 
@@ -44,6 +59,7 @@ module.exports = async (req, res) => {
     // CRIAR
     // ======================
     if (req.method === 'POST') {
+
       if (typeof req.body === 'string') {
         req.body = JSON.parse(req.body)
       }
@@ -55,22 +71,28 @@ module.exports = async (req, res) => {
         name.trim() === '' ||
         price === undefined ||
         price === null ||
-        !Array.isArray(images)
+        !Array.isArray(images) ||
+        images.length === 0
       ) {
         return res.status(400).json({ error: 'Dados inválidos' })
       }
 
-const { rows } = await pool.query(`
-  INSERT INTO products (name, description, price, images)
-  VALUES ($1, $2, $3, $4::text[])
-  RETURNING id, name, description, price, images
-`, [
-  name.trim(),
-  description || '',
-  Number(price),
-  images
-])
+      if (!images.every(img => typeof img === 'string' && isValidUrl(img))) {
+        return res.status(400).json({
+          error: 'Todas as imagens devem ser URLs válidas'
+        })
+      }
 
+      const { rows } = await pool.query(`
+        INSERT INTO products (name, description, price, images)
+        VALUES ($1, $2, $3, $4::text[])
+        RETURNING id, name, description, price, images
+      `, [
+        name.trim(),
+        description || '',
+        Number(price),
+        images
+      ])
 
       return res.status(201).json(rows[0])
     }
@@ -79,21 +101,35 @@ const { rows } = await pool.query(`
     // ATUALIZAR
     // ======================
     if (req.method === 'PUT') {
+
       if (typeof req.body === 'string') {
         req.body = JSON.parse(req.body)
       }
 
       const { id } = req.query
-      if (!id) return res.status(400).json({ error: 'ID obrigatório' })
+      if (!id) {
+        return res.status(400).json({ error: 'ID obrigatório' })
+      }
 
       const { name, description, price, images } = req.body || {}
+
+      if (images) {
+        if (
+          !Array.isArray(images) ||
+          !images.every(img => typeof img === 'string' && isValidUrl(img))
+        ) {
+          return res.status(400).json({
+            error: 'Images deve ser um array de URLs válidas'
+          })
+        }
+      }
 
       const { rows } = await pool.query(`
         UPDATE products SET
           name = COALESCE($1, name),
           description = COALESCE($2, description),
           price = COALESCE($3, price),
-          images = COALESCE($4, images)
+          images = COALESCE($4::text[], images)
         WHERE id = $5
         RETURNING id, name, description, price, images
       `, [
@@ -112,7 +148,9 @@ const { rows } = await pool.query(`
     // ======================
     if (req.method === 'DELETE') {
       const { id } = req.query
-      if (!id) return res.status(400).json({ error: 'ID obrigatório' })
+      if (!id) {
+        return res.status(400).json({ error: 'ID obrigatório' })
+      }
 
       await pool.query(`DELETE FROM products WHERE id = $1`, [id])
       return res.status(200).json({ success: true })

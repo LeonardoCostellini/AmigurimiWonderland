@@ -38,15 +38,15 @@ async function loadProducts() {
     productsDiv.innerHTML += `
       <div class="card">
         <div class="card-images">
-          ${(p.images || []).map(img => `<img src="${img}">`).join('')}
+          ${(p.images || []).map(img => `<img src="${img}" alt="${p.name}">`).join('')}
         </div>
 
         <h3>${p.name}</h3>
         <p>${p.description || ''}</p>
         <p>R$ ${Number(p.price).toFixed(2)}</p>
 
-        <button onclick="editProduct('${p.id}')">Editar</button>
-        <button onclick="deleteProduct('${p.id}')">Excluir</button>
+        <button onclick="editProduct(${p.id})">Editar</button>
+        <button onclick="deleteProduct(${p.id})">Excluir</button>
       </div>
     `
   })
@@ -57,14 +57,22 @@ form.addEventListener('submit', async e => {
   e.preventDefault()
 
   const images = [
-    imageUrl1.value,
-    imageUrl2.value,
-    imageUrl3.value
+    imageUrl1.value.trim(),
+    imageUrl2.value.trim(),
+    imageUrl3.value.trim()
   ].filter(Boolean)
+
+  if (!nameInput.value.trim()) {
+    return alert('Nome é obrigatório')
+  }
+
+  if (images.length === 0) {
+    return alert('Informe pelo menos uma URL de imagem')
+  }
 
   const data = {
     name: nameInput.value.trim(),
-    description: descriptionInput.value.trim(),
+    description: descriptionInput?.value?.trim() || '',
     price: Number(priceInput.value),
     images
   }
@@ -78,7 +86,7 @@ form.addEventListener('submit', async e => {
     method,
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${getToken()}`
+      Authorization: `Bearer ${getToken()}`
     },
     body: JSON.stringify(data)
   })
@@ -98,7 +106,7 @@ async function editProduct(id) {
   })
 
   const products = await res.json()
-  const p = products.find(p => p.id === id)
+  const p = products.find(p => Number(p.id) === Number(id))
   if (!p) return
 
   editingId = id
