@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - Amigurimi Wonderland</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="icon" type="image/png" sizes="32x32" href="img/favicon.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="img/favicon.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="img/favicon.png">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Poppins', Arial, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+    
+    .login-card {
+      background: white;
+      padding: 40px;
+      border-radius: 20px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+      width: 100%;
+      max-width: 400px;
+      text-align: center;
+    }
+    
+    .login-card h2 {
+      margin: 0 0 30px 0;
+      color: #333;
+      font-size: 28px;
+    }
+    
+    .login-card input {
+      width: 100%;
+      padding: 15px;
+      margin-bottom: 15px;
+      border: 2px solid #e0e0e0;
+      border-radius: 10px;
+      font-size: 16px;
+      box-sizing: border-box;
+      transition: border-color 0.3s;
+    }
+    
+    .login-card input:focus {
+      outline: none;
+      border-color: #667eea;
+    }
+    
+    .login-card button {
+      width: 100%;
+      padding: 15px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-size: 18px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    
+    .login-card button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
+    }
+    
+    .login-card button:active {
+      transform: translateY(0);
+    }
+    
+    .credentials-hint {
+      margin-top: 20px;
+      padding: 15px;
+      background: #f0f4ff;
+      border-radius: 10px;
+      font-size: 14px;
+      color: #666;
+    }
+    
+    .credentials-hint strong {
+      color: #667eea;
+    }
+    
+    .error-message {
+      color: #e74c3c;
+      margin-top: 10px;
+      font-size: 14px;
+      display: none;
+    }
+    
+    .loading {
+      display: none;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="login-card">
+    <h2>Painel Admin 🔐</h2>
+    <form id="loginForm" onsubmit="event.preventDefault(); login();">
+      <input 
+        type="email" 
+        id="email" 
+        placeholder="Email" 
+        required 
+        autocomplete="email"
+      />
+      <input 
+        type="password" 
+        id="password" 
+        placeholder="Senha" 
+        required 
+        autocomplete="current-password"
+      />
+      <button type="submit">Entrar</button>
+    </form>
+    
+    <div class="error-message" id="errorMessage"></div>
+    <div class="loading" id="loading">Carregando...</div>
+
+<script>
+async function login() {
+  const email = document.getElementById('email').value
+  const password = document.getElementById('password').value
+
+  const errorBox = document.getElementById('errorMessage')
+  errorBox.style.display = 'none'
+
+  try {
+    const res = await fetch('/api/auth/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password })
+    })
+
+    const text = await res.text()
+    let data
+
+    try {
+      data = JSON.parse(text)
+    } catch {
+      throw new Error('Resposta inválida do servidor')
+    }
+
+    if (!res.ok) {
+      errorBox.textContent = data.error || 'Erro ao fazer login'
+      errorBox.style.display = 'block'
+      return
+    }
+
+    localStorage.setItem('token', data.token)
+    window.location.href = '/dashboard.html'
+
+  } catch (err) {
+    errorBox.textContent = err.message || 'Erro inesperado'
+    errorBox.style.display = 'block'
+  }
+}
+</script>
+
