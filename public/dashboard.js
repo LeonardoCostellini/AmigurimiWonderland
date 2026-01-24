@@ -3,22 +3,41 @@ const productsDiv = document.getElementById('products')
 
 let editingId = null
 
+function getToken() {
+  const token = localStorage.getItem('token')
+  if (!token) {
+    alert('Sessão expirada. Faça login novamente.')
+    window.location.href = '/login.html'
+    throw new Error('No token')
+  }
+  return token
+}
+
 // ================= LISTAR =================
 async function loadProducts() {
-  const res = await fetch('/api/products')
-  const products = await res.json()
+  const res = await fetch('/api/products', {
+    headers: {
+      Authorization: `Bearer ${getToken()}`
+    }
+  })
+
+  const data = await res.json()
+
+  if (!res.ok) {
+    console.error(data)
+    alert(data.error || 'Erro ao carregar produtos')
+    return
+  }
 
   productsDiv.innerHTML = ''
 
-  products.forEach(p => {
+  data.forEach(p => {
     const images = p.images || []
 
     productsDiv.innerHTML += `
       <div class="card">
         <div class="card-images">
-          ${images.map(img => `
-            <img src="${img}" alt="${p.name}">
-          `).join('')}
+          ${images.map(img => `<img src="${img}" alt="${p.name}">`).join('')}
         </div>
 
         <div class="card-body">
@@ -35,32 +54,43 @@ async function loadProducts() {
   })
 }
 
-
 // ================= SALVAR / EDITAR =================
 form.addEventListener('submit', async e => {
   e.preventDefault()
 
   const images = [
-    document.getElementById('imageUrl1').value,
-    document.getElementById('imageUrl2').value,
-    document.getElementById('imageUrl3').value
+    imageUrl1.value,
+    imageUrl2.value,
+    imageUrl3.value
   ].filter(Boolean)
 
   const data = {
-    name: document.getElementById('name').value,
-    description: document.getElementById('description').value,
-    price: Number(document.getElementById('price').value),
+    name: name.value,
+    description: description.value,
+    price: Number(price.value),
     images
   }
 
   const method = editingId ? 'PUT' : 'POST'
-  const url = editingId ? `/api/products/${editingId}` : '/api/products'
+  const url = editingId
+    ? `/api/products?id=${editingId}`
+    : '/api/products'
 
-  await fetch(url, {
+  const res = await fetch(url, {
     method,
-    headers: { 'Content-Type': 'application/json' },
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${getToken()}`
+    },
     body: JSON.stringify(data)
   })
+
+  const result = await res.json()
+
+  if (!res.ok) {
+    alert(result.error || 'Erro ao salvar produto')
+    return
+  }
 
   form.reset()
   editingId = null
@@ -69,26 +99,46 @@ form.addEventListener('submit', async e => {
 
 // ================= EDITAR =================
 async function editProduct(id) {
-  const res = await fetch('/api/products')
+  const res = await fetch('/api/products', {
+    headers: {
+      Authorization: `Bearer ${getToken()}`
+    }
+  })
+
   const products = await res.json()
   const p = products.find(p => p.id === id)
 
+  if (!p) return
+
   editingId = id
 
-  document.getElementById('name').value = p.name
-  document.getElementById('description').value = p.description || ''
-  document.getElementById('price').value = p.price
+  name.value = p.name
+  description.value = p.description || ''
+  price.value = p.price
 
-  document.getElementById('imageUrl1').value = p.images?.[0] || ''
-  document.getElementById('imageUrl2').value = p.images?.[1] || ''
-  document.getElementById('imageUrl3').value = p.images?.[2] || ''
+  imageUrl1.value = p.images?.[0] || ''
+  imageUrl2.value = p.images?.[1] || ''
+  imageUrl3.value = p.images?.[2] || ''
 }
 
 // ================= EXCLUIR =================
 async function deleteProduct(id) {
   if (!confirm('Excluir produto?')) return
 
-  await fetch(`/api/products/${id}`, { method: 'DELETE' })
+  const res = await fetch(`/api/products?id=${id}`, {
+    method: 'DELETE',
+    headers: {
+      Authorization: `Bearer ${getToken()}`
+    }
+  })
+
+  const result = await res.json()
+
+  if (!res.ok) {
+    alert(result.error || 'Erro ao excluir produto')
+    return
+  }
+
   loadProducts()
 }
 
