@@ -11,7 +11,7 @@ const imageUrl2 = document.getElementById('imageUrl2')
 const imageUrl3 = document.getElementById('imageUrl3')
 
 let editingId = null
-let modalImages = []
+const productImagesMap = {} // guarda imagens por produto
 
 function getToken() {
   return localStorage.getItem('token')
@@ -26,14 +26,17 @@ async function loadProducts() {
 
   data.forEach(p => {
     const images = (p.images || []).filter(i => i && i.startsWith('http'))
+    if (!images.length) return
+
+    productImagesMap[p.id] = images
 
     productsDiv.innerHTML += `
       <div class="card">
-        <div class="card-images">
-          ${images.map((img, index) =>
-            `<img src="${img}" onclick="openImageModal(${p.id}, ${index})">`
-          ).join('')}
-        </div>
+        <img 
+          src="${images[0]}" 
+          class="card-main-image"
+          onclick="openImageModal(${p.id}, 0)"
+        >
 
         <h3>${p.name}</h3>
         <p>${p.category || ''}</p>
@@ -46,9 +49,6 @@ async function loadProducts() {
         </div>
       </div>
     `
-
-    // guarda imagens pra modal
-    modalImages[p.id] = images
   })
 }
 
@@ -131,9 +131,9 @@ async function deleteProduct(id) {
   loadProducts()
 }
 
-/* ================= MODAL ================= */
+/* ================= MODAL GALERIA ================= */
 function openImageModal(productId, index) {
-  const images = modalImages[productId]
+  const images = productImagesMap[productId]
   if (!images?.length) return
 
   const modal = document.getElementById('imageModal')

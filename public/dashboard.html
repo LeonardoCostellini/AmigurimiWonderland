@@ -4,7 +4,10 @@
   <meta charset="UTF-8" />
   <title>Dashboard | Amigurimi</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  
+  <link rel="icon" type="image/png" sizes="32x32" href="img/favicon.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="img/favicon.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="img/favicon.png">
+
   <style>
     :root {
       --yellow: #FFC107;
@@ -386,6 +389,7 @@
       border-color: var(--yellow);
     }
     
+  
     /* ANIMATIONS */
     @keyframes fadeUp {
       from {
@@ -463,16 +467,14 @@
 
   <!-- TABS -->
   <div class="tabs">
-    <button class="tab active">🏷️ Produtos (10)</button>
-    <button class="tab">📑 Categorias (4)</button>
-    <button class="tab">📦 Pedidos (0)</button>
+    <button class="tab active">🏷️ Produtos</button>
+    <button class="tab">📑 Categorias</button>
   </div>
 
   <!-- CONTENT -->
   <div class="content">
     <div class="section-header">
       <h2>Gerenciar Produtos</h2>
-      <button class="btn-add">+ Adicionar Produto</button>
     </div>
 
     <!-- FORM -->
@@ -492,17 +494,12 @@
   </div>
 
   <!-- MODAL IMAGENS -->
-  <div class="modal-overlay" id="imageModal" onclick="closeImageModal()">
-    <div class="modal modal-product" onclick="event.stopPropagation()">
-      <button class="modal-close" onclick="closeImageModal()">✕</button>
-      <div class="modal-product-content">
-        <div class="modal-images">
-          <img id="modalMainImage" src="" alt="Produto">
-          <div class="modal-thumbs" id="modalThumbs"></div>
-        </div>
-      </div>
-    </div>
+<div id="imageModal" class="modal hidden">
+  <div class="modal-content">
+    <span class="close">&times;</span>
+    <div id="modalImages" class="modal-images"></div>
   </div>
+</div>
 
   <script src="dashboard.js"></script>
 </body>

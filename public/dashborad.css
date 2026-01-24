@@ -461,3 +461,68 @@ form button:hover {
     grid-template-columns: 1fr;
   }
 }
+
+/* ===== GRID DE PRODUTOS ===== */
+#productsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 20px;
+  align-items: stretch;
+}
+
+/* ===== CARD ===== */
+.product-card {
+  background: #fff;
+  border-radius: 16px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.product-card img {
+  width: 100%;
+  height: auto;
+  cursor: pointer;
+  display: block;
+}
+
+/* ===== MODAL GALERIA ===== */
+.modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+}
+
+.modal.hidden {
+  display: none;
+}
+
+.modal-content {
+  background: #fff;
+  max-width: 900px;
+  width: 90%;
+  padding: 20px;
+  border-radius: 16px;
+}
+
+.close {
+  font-size: 28px;
+  cursor: pointer;
+  float: right;
+}
+
+.modal-images {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.modal-images img {
+  width: 100%;
+  border-radius: 12px;
+}
