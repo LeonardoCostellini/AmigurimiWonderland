@@ -1,92 +1,102 @@
-let activeCategory = 'Todos'
-
-/* ================= CATEGORIAS ================= */
-async function loadCategories() {
-  const res = await fetch('/api/products?categories=true')
-  const categories = await res.json()
-
-  const filters = document.getElementById('filters')
-  filters.innerHTML = ''
-
-  const allBtn = document.createElement('button')
-  allBtn.className = 'pill active'
-  allBtn.textContent = 'Todos'
-  allBtn.onclick = () => setCategory('Todos')
-  filters.appendChild(allBtn)
-
-  categories.forEach(cat => {
-    const btn = document.createElement('button')
-    btn.className = 'pill'
-    btn.textContent = cat
-    btn.onclick = () => setCategory(cat)
-    filters.appendChild(btn)
-  })
-}
-
-/* ================= SET CATEGORY ================= */
-function setCategory(category) {
-  activeCategory = category
-
-  document.querySelectorAll('.pill').forEach(p =>
-    p.classList.remove('active')
-  )
-
-  [...document.querySelectorAll('.pill')]
-    .find(p => p.textContent === category)
-    ?.classList.add('active')
-
-  loadProducts()
-}
-
-/* ================= PRODUTOS ================= */
-async function loadProducts() {
+async function loadProducts(category = null) {
   try {
-    const url =
-      activeCategory === 'Todos'
-        ? '/api/products'
-        : `/api/products?category=${encodeURIComponent(activeCategory)}`
+    const url = category
+      ? `/api/products?category=${encodeURIComponent(category)}`
+      : '/api/products'
 
     const res = await fetch(url)
     const products = await res.json()
 
-    if (!res.ok) {
-      throw new Error('Erro ao buscar produtos')
-    }
-
     const grid = document.getElementById('productsGrid')
     grid.innerHTML = ''
 
-    if (products.length === 0) {
-      grid.innerHTML = `<p class="empty">Nenhum produto nessa categoria</p>`
-      return
-    }
-
     products.forEach(p => {
-      const image =
-        Array.isArray(p.images) && p.images.length
-          ? p.images[0]
-          : '/img/placeholder.png'
+      const image = p.images?.[0] || '/img/placeholder.png'
 
       grid.innerHTML += `
-        <div class="product-card" onclick='openProductModal(${JSON.stringify(p)})'>
+        <div class="product-card" onclick="openProductModal(${JSON.stringify(p).replace(/"/g, '&quot;')})">
           <div class="product-image">
             <img src="${image}" alt="${p.name}">
           </div>
 
           <div class="product-info">
             <h3>${p.name}</h3>
-            <span class="product-price">
-              R$ ${Number(p.price).toFixed(2)}
-            </span>
+            <p class="product-description">${p.description || ''}</p>
+
+            <div class="product-footer">
+              <span class="product-price">
+                R$ ${Number(p.price).toFixed(2)}
+              </span>
+            </div>
           </div>
         </div>
       `
     })
   } catch (err) {
-    console.error(err)
+    console.error('Erro ao carregar produtos:', err)
   }
 }
 
-/* ================= INIT ================= */
+async function loadCategories() {
+  const res = await fetch('/api/categories')
+  const categories = await res.json()
+
+  const filters = document.getElementById('filters')
+  filters.innerHTML = ''
+
+  // Botão TODOS
+  filters.innerHTML += `
+    <button class="pill active" onclick="setActive(this); loadProducts()">
+      Todos
+    </button>
+  `
+
+  categories.forEach(cat => {
+    filters.innerHTML += `
+      <button class="pill"
+        onclick="setActive(this); loadProducts('${cat}')">
+        ${cat}
+      </button>
+    `
+  })
+}
+
+function setActive(button) {
+  document.querySelectorAll('.pill').forEach(b => b.classList.remove('active'))
+  button.classList.add('active')
+}
+
+
+
+async function loadCategories() {
+  const res = await fetch('/api/categories')
+  const categories = await res.json()
+
+  const filters = document.getElementById('filters')
+  filters.innerHTML = ''
+
+  // Botão TODOS
+  filters.innerHTML += `
+    <button class="pill active" onclick="setActive(this); loadProducts()">
+      Todos
+    </button>
+  `
+
+  categories.forEach(cat => {
+    filters.innerHTML += `
+      <button class="pill"
+        onclick="setActive(this); loadProducts('${cat}')">
+        ${cat}
+      </button>
+    `
+  })
+}
+
+function setActive(button) {
+  document.querySelectorAll('.pill').forEach(b => b.classList.remove('active'))
+  button.classList.add('active')
+}
+
 loadCategories()
 loadProducts()
+
