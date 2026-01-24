@@ -37,19 +37,22 @@
   <h2>Produtos cadastrados</h2>
   <div id="products" class="products-grid"></div>
 
-  <!-- MODAL DE IMAGENS -->
-  <div class="modal-overlay" id="imageModal" onclick="closeImageModal()">
-    <div class="modal modal-product" onclick="event.stopPropagation()">
-      <button class="modal-close" onclick="closeImageModal()">✕</button>
+<!-- MODAL IMAGENS -->
+<div class="modal-overlay" id="imageModal" onclick="closeImageModal()">
+  <div class="modal modal-product" onclick="event.stopPropagation()">
 
-      <div class="modal-product-content">
-        <div class="modal-images">
-          <img id="modalMainImage" src="" alt="Imagem do produto">
-          <div class="modal-thumbs" id="modalThumbs"></div>
-        </div>
+    <button class="modal-close" onclick="closeImageModal()">✕</button>
+
+    <div class="modal-product-content">
+      <div class="modal-images">
+        <img id="modalMainImage" src="" alt="Produto">
+        <div class="modal-thumbs" id="modalThumbs"></div>
       </div>
     </div>
+
   </div>
+</div>
+
 
   <script src="dashboard.js"></script>
 </body>

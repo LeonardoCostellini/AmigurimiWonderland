@@ -11,6 +11,7 @@ const imageUrl2 = document.getElementById('imageUrl2')
 const imageUrl3 = document.getElementById('imageUrl3')
 
 let editingId = null
+let modalImages = []
 
 function getToken() {
   return localStorage.getItem('token')
@@ -29,8 +30,8 @@ async function loadProducts() {
     productsDiv.innerHTML += `
       <div class="card">
         <div class="card-images">
-          ${images.map(img =>
-            `<img src="${img}" onclick='openImageModal(${JSON.stringify(images)})'>`
+          ${images.map((img, index) =>
+            `<img src="${img}" onclick="openImageModal(${p.id}, ${index})">`
           ).join('')}
         </div>
 
@@ -45,6 +46,9 @@ async function loadProducts() {
         </div>
       </div>
     `
+
+    // guarda imagens pra modal
+    modalImages[p.id] = images
   })
 }
 
@@ -57,6 +61,11 @@ form.addEventListener('submit', async e => {
     imageUrl2.value,
     imageUrl3.value
   ].filter(v => v && v.startsWith('http'))
+
+  if (!images.length) {
+    alert('Informe ao menos uma imagem válida')
+    return
+  }
 
   const data = {
     name: nameInput.value.trim(),
@@ -123,12 +132,15 @@ async function deleteProduct(id) {
 }
 
 /* ================= MODAL ================= */
-function openImageModal(images) {
+function openImageModal(productId, index) {
+  const images = modalImages[productId]
+  if (!images?.length) return
+
   const modal = document.getElementById('imageModal')
   const main = document.getElementById('modalMainImage')
   const thumbs = document.getElementById('modalThumbs')
 
-  main.src = images[0]
+  main.src = images[index]
   thumbs.innerHTML = ''
 
   images.forEach(img => {
