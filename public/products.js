@@ -7,10 +7,6 @@ const pool = new Pool({
 
 module.exports = async (req, res) => {
   try {
-    if (req.method !== 'GET') {
-      return res.status(405).json({ error: 'Method not allowed' })
-    }
-
     const { rows } = await pool.query(`
       SELECT id, name, description, price, images
       FROM products
