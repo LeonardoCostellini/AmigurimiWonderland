@@ -45,15 +45,23 @@ module.exports = async (req, res) => {
     if (req.method === 'POST') {
       const { name, description, price, images } = req.body || {}
 
-      if (!name || !price || !Array.isArray(images)) {
-        return res.status(400).json({ error: 'Dados inválidos' })
+      // 👉 criar EXIGE ao menos 1 imagem
+      if (!name || !price || !Array.isArray(images) || images.length === 0) {
+        return res.status(400).json({
+          error: 'Nome, preço e ao menos 1 imagem são obrigatórios'
+        })
       }
 
       const { rows } = await pool.query(`
         INSERT INTO products (name, description, price, images)
-        VALUES ($1, $2, $3, $4)
+        VALUES ($1, $2, $3, $4::jsonb)
         RETURNING *
-      `, [name, description || '', price, JSON.stringify(images)])
+      `, [
+        name,
+        description || '',
+        price,
+        JSON.stringify(images)
+      ])
 
       return res.status(201).json(rows[0])
     }
@@ -65,16 +73,30 @@ module.exports = async (req, res) => {
 
       const { name, description, price, images } = req.body || {}
 
+      const imagesValue =
+        Array.isArray(images) && images.length > 0
+          ? JSON.stringify(images)
+          : null
+
       const { rows } = await pool.query(`
         UPDATE products
         SET
           name = COALESCE($1, name),
           description = COALESCE($2, description),
           price = COALESCE($3, price),
-          images = COALESCE($4, images)
+          images = CASE
+            WHEN $4 IS NOT NULL THEN $4::jsonb
+            ELSE images
+          END
         WHERE id = $5
         RETURNING *
-      `, [name, description, price, images && JSON.stringify(images), id])
+      `, [
+        name ?? null,
+        description ?? null,
+        price ?? null,
+        imagesValue,
+        id
+      ])
 
       return res.status(200).json(rows[0])
     }
