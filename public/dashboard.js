@@ -41,17 +41,32 @@ async function loadProducts() {
 form.addEventListener('submit', async e => {
   e.preventDefault()
 
+  const token = getToken()
+  if (!token) {
+    alert('Você não está logado')
+    return
+  }
+
   const images = [
     imageUrl1.value,
     imageUrl2.value,
     imageUrl3.value
   ].filter(Boolean)
 
+  if (!nameInput.value.trim()) {
+    alert('Nome é obrigatório')
+    return
+  }
+
+  if (images.length === 0) {
+    alert('Informe pelo menos uma imagem')
+    return
+  }
+
   const data = {
-    name: nameInput.value,
-    description: descriptionInput.value,
+    name: nameInput.value.trim(),
+    description: descriptionInput.value.trim(),
     price: Number(priceInput.value),
-    category: categoryInput.value,
     images
   }
 
@@ -61,16 +76,25 @@ form.addEventListener('submit', async e => {
       method: editingId ? 'PUT' : 'POST',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${getToken()}`
+        Authorization: `Bearer ${token}`
       },
       body: JSON.stringify(data)
     }
   )
 
+  const result = await res.json()
+
+  if (!res.ok) {
+    alert(result.error || 'Erro ao salvar produto')
+    return
+  }
+
+  alert('Produto salvo com sucesso!')
   form.reset()
   editingId = null
   loadProducts()
 })
+
 
 // ================= EDITAR =================
 async function editProduct(id) {
