@@ -56,16 +56,17 @@ module.exports = async (req, res) => {
       }
 
 
-      const { rows } = await pool.query(`
-        INSERT INTO products (name, description, price, images)
-        VALUES ($1, $2, $3, $4)
-        RETURNING *
-      `, [
-        name,
-        description || '',
-        Number(price),
-        JSON.stringify(images)
-      ])
+const { rows } = await pool.query(`
+  INSERT INTO products (name, description, price, images)
+  VALUES ($1, $2, $3, $4)
+  RETURNING *
+`, [
+  name,
+  description || '',
+  Number(price),
+  JSON.stringify(images ?? [])
+])
+
 
       return res.status(201).json(rows[0])
     }
