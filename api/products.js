@@ -60,16 +60,17 @@ module.exports = async (req, res) => {
         return res.status(400).json({ error: 'Dados inválidos' })
       }
 
-      const { rows } = await pool.query(`
-        INSERT INTO products (name, description, price, images)
-        VALUES ($1, $2, $3, $4)
-        RETURNING id, name, description, price, images
-      `, [
-        name.trim(),
-        description || '',
-        Number(price),
-        images // 👈 ARRAY DIRETO (TEXT[])
-      ])
+const { rows } = await pool.query(`
+  INSERT INTO products (name, description, price, images)
+  VALUES ($1, $2, $3, $4::text[])
+  RETURNING id, name, description, price, images
+`, [
+  name.trim(),
+  description || '',
+  Number(price),
+  images
+])
+
 
       return res.status(201).json(rows[0])
     }
