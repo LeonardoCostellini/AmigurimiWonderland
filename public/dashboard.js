@@ -127,3 +127,27 @@ async function deleteProduct(id) {
 }
 
 loadProducts()
+
+function openImageModal(images = []) {
+  if (!images.length) return
+
+  const modal = document.getElementById('imageModal')
+  const mainImg = document.getElementById('modalMainImage')
+  const thumbs = document.getElementById('modalThumbs')
+
+  mainImg.src = images[0]
+  thumbs.innerHTML = ''
+
+  images.forEach(img => {
+    const thumb = document.createElement('img')
+    thumb.src = img
+    thumb.onclick = () => mainImg.src = img
+    thumbs.appendChild(thumb)
+  })
+
+  modal.style.display = 'flex'
+}
+
+function closeImageModal() {
+  document.getElementById('imageModal').style.display = 'none'
+}

@@ -105,3 +105,39 @@ form button:hover {
   background: #ef4444;
   color: white;
 }
+
+.card-images {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.card-images img {
+  width: 70px;
+  height: 70px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+}
+
+/* ================= IMAGENS DOS PRODUTOS ================= */
+.card-images {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.card-images img {
+  width: 72px;
+  height: 72px;
+  object-fit: cover;
+  border-radius: 12px;
+  cursor: pointer;
+  border: 1px solid #eee;
+  transition: transform .2s ease, box-shadow .2s ease;
+}
+
+.card-images img:hover {
+  transform: scale(1.05);
+  box-shadow: 0 6px 16px rgba(0,0,0,.15);
+}

@@ -11,6 +11,24 @@ if (!localStorage.getItem('token')) {
   <title>Dashboard | Amigurimi</title>
   <link rel="stylesheet" href="dashborad.css" />
 </head>
+
+<div class="modal-overlay" id="imageModal" onclick="closeImageModal()">
+  <div class="modal modal-product" onclick="event.stopPropagation()">
+
+    <button class="modal-close" onclick="closeImageModal()">✕</button>
+
+    <div class="modal-product-content">
+
+      <div class="modal-images">
+        <img id="modalMainImage" src="" alt="Imagem">
+
+        <div class="modal-thumbs" id="modalThumbs"></div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
 <body>
 
   <h1>Painel Administrativo</h1>
