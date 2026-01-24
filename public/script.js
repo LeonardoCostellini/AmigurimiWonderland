@@ -14,6 +14,7 @@ window.addEventListener('DOMContentLoaded', () => {
       splashScreen.style.display = 'none'
       header.classList.add('visible')
       loadCartFromStorage()
+      carregarCategorias()
       carregarProdutos()
     }, 500)
   }, 3500)
@@ -271,4 +272,27 @@ function openProductModal(index) {
 
 function closeProductModal() {
   document.getElementById('productModal')?.classList.remove('show')
+}
+
+
+//================ CARREGAR CATEGORIA ================ //
+
+async function carregarCategorias() {
+  const filters = document.getElementById('filters')
+  if (!filters) return
+
+  const res = await fetch('/api/products?categories=true')
+  const categories = await res.json()
+
+  filters.innerHTML = `
+    <button class="pill active" data-category="Todos">Todos</button>
+  `
+
+  categories.forEach(cat => {
+    filters.innerHTML += `
+      <button class="pill" data-category="${cat}">
+        ${cat}
+      </button>
+    `
+  })
 }
