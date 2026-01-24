@@ -16,7 +16,7 @@ function getToken() {
   return localStorage.getItem('token')
 }
 
-// ================= LISTAR =================
+/* ================= LISTAR ================= */
 async function loadProducts() {
   const res = await fetch('/api/products')
   const data = await res.json()
@@ -24,49 +24,45 @@ async function loadProducts() {
   productsDiv.innerHTML = ''
 
   data.forEach(p => {
+    const images = (p.images || []).filter(i => i && i.startsWith('http'))
+
     productsDiv.innerHTML += `
       <div class="card">
-        ${(p.images || []).map(img => `<img src="${img}">`).join('')}
+        <div class="card-images">
+          ${images.map(img =>
+            `<img src="${img}" onclick='openImageModal(${JSON.stringify(images)})'>`
+          ).join('')}
+        </div>
+
         <h3>${p.name}</h3>
-        <p>${p.category}</p>
-        <p>R$ ${p.price}</p>
-        <button onclick="editProduct('${p.id}')">Editar</button>
-        <button onclick="deleteProduct('${p.id}')">Excluir</button>
+        <p>${p.category || ''}</p>
+        <p>${p.description || ''}</p>
+        <strong>R$ ${Number(p.price).toFixed(2)}</strong>
+
+        <div class="card-actions">
+          <button class="btn-edit" onclick="editProduct('${p.id}')">Editar</button>
+          <button class="btn-delete" onclick="deleteProduct('${p.id}')">Excluir</button>
+        </div>
       </div>
     `
   })
 }
 
-// ================= SALVAR =================
+/* ================= SALVAR ================= */
 form.addEventListener('submit', async e => {
   e.preventDefault()
-
-  const token = getToken()
-  if (!token) {
-    alert('Você não está logado')
-    return
-  }
 
   const images = [
     imageUrl1.value,
     imageUrl2.value,
     imageUrl3.value
-  ].filter(Boolean)
-
-  if (!nameInput.value.trim()) {
-    alert('Nome é obrigatório')
-    return
-  }
-
-  if (images.length === 0) {
-    alert('Informe pelo menos uma imagem')
-    return
-  }
+  ].filter(v => v && v.startsWith('http'))
 
   const data = {
     name: nameInput.value.trim(),
     description: descriptionInput.value.trim(),
     price: Number(priceInput.value),
+    category: categoryInput.value.trim(),
     images
   }
 
@@ -76,46 +72,46 @@ form.addEventListener('submit', async e => {
       method: editingId ? 'PUT' : 'POST',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`
+        Authorization: `Bearer ${getToken()}`
       },
       body: JSON.stringify(data)
     }
   )
 
-  const result = await res.json()
-
   if (!res.ok) {
-    alert(result.error || 'Erro ao salvar produto')
+    alert('Erro ao salvar')
     return
   }
 
-  alert('Produto salvo com sucesso!')
   form.reset()
   editingId = null
   loadProducts()
 })
 
-
-// ================= EDITAR =================
+/* ================= EDITAR ================= */
 async function editProduct(id) {
   const res = await fetch('/api/products')
   const products = await res.json()
-  const p = products.find(p => p.id == id)
+
+  const p = products.find(p => p.id === id)
+  if (!p) return
 
   editingId = id
 
   nameInput.value = p.name
-  descriptionInput.value = p.description
+  descriptionInput.value = p.description || ''
   priceInput.value = p.price
-  categoryInput.value = p.category
+  categoryInput.value = p.category || ''
 
   imageUrl1.value = p.images?.[0] || ''
   imageUrl2.value = p.images?.[1] || ''
   imageUrl3.value = p.images?.[2] || ''
 }
 
-// ================= EXCLUIR =================
+/* ================= EXCLUIR ================= */
 async function deleteProduct(id) {
+  if (!confirm('Excluir produto?')) return
+
   await fetch(`/api/products?id=${id}`, {
     method: 'DELETE',
     headers: {
@@ -126,23 +122,20 @@ async function deleteProduct(id) {
   loadProducts()
 }
 
-loadProducts()
-
-function openImageModal(images = []) {
-  if (!images.length) return
-
+/* ================= MODAL ================= */
+function openImageModal(images) {
   const modal = document.getElementById('imageModal')
-  const mainImg = document.getElementById('modalMainImage')
+  const main = document.getElementById('modalMainImage')
   const thumbs = document.getElementById('modalThumbs')
 
-  mainImg.src = images[0]
+  main.src = images[0]
   thumbs.innerHTML = ''
 
   images.forEach(img => {
-    const thumb = document.createElement('img')
-    thumb.src = img
-    thumb.onclick = () => mainImg.src = img
-    thumbs.appendChild(thumb)
+    const t = document.createElement('img')
+    t.src = img
+    t.onclick = () => main.src = img
+    thumbs.appendChild(t)
   })
 
   modal.style.display = 'flex'
@@ -151,3 +144,5 @@ function openImageModal(images = []) {
 function closeImageModal() {
   document.getElementById('imageModal').style.display = 'none'
 }
+
+loadProducts()

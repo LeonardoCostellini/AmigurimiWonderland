@@ -1,59 +1,56 @@
-<script>
-if (!localStorage.getItem('token')) {
-  window.location.href = '/login.html'
-}
-</script>
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
   <title>Dashboard | Amigurimi</title>
+
   <link rel="stylesheet" href="dashborad.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <script>
+    if (!localStorage.getItem('token')) {
+      window.location.href = '/login.html'
+    }
+  </script>
 </head>
-
-<div class="modal-overlay" id="imageModal" onclick="closeImageModal()">
-  <div class="modal modal-product" onclick="event.stopPropagation()">
-
-    <button class="modal-close" onclick="closeImageModal()">✕</button>
-
-    <div class="modal-product-content">
-
-      <div class="modal-images">
-        <img id="modalMainImage" src="" alt="Imagem">
-
-        <div class="modal-thumbs" id="modalThumbs"></div>
-      </div>
-
-    </div>
-  </div>
-</div>
 
 <body>
 
   <h1>Painel Administrativo</h1>
 
-<form id="productForm">
-  <input type="text" id="name" placeholder="Nome" required>
+  <form id="productForm">
+    <input type="text" id="name" placeholder="Nome" required>
 
-  <input type="text" id="imageUrl1" placeholder="Imagem 1 (principal)" required>
-  <input type="text" id="imageUrl2" placeholder="Imagem 2">
-  <input type="text" id="imageUrl3" placeholder="Imagem 3">
-  <input id="category" placeholder="Categoria (ex: Pokémon)">
+    <input type="text" id="imageUrl1" placeholder="Imagem 1 (principal)" required>
+    <input type="text" id="imageUrl2" placeholder="Imagem 2">
+    <input type="text" id="imageUrl3" placeholder="Imagem 3">
 
-  <textarea id="description" placeholder="Descrição"></textarea>
+    <input type="text" id="category" placeholder="Categoria (ex: Pokémon)">
 
-  <input type="number" id="price" step="0.01" placeholder="Preço" required>
+    <textarea id="description" placeholder="Descrição"></textarea>
 
-  <button type="submit">Salvar</button>
-</form>
+    <input type="number" id="price" step="0.01" placeholder="Preço" required>
 
+    <button type="submit">Salvar</button>
+  </form>
 
-<h2>Produtos cadastrados</h2>
-<div id="products" class="products-grid"></div>
+  <h2>Produtos cadastrados</h2>
+  <div id="products" class="products-grid"></div>
 
+  <!-- MODAL DE IMAGENS -->
+  <div class="modal-overlay" id="imageModal" onclick="closeImageModal()">
+    <div class="modal modal-product" onclick="event.stopPropagation()">
+      <button class="modal-close" onclick="closeImageModal()">✕</button>
 
+      <div class="modal-product-content">
+        <div class="modal-images">
+          <img id="modalMainImage" src="" alt="Imagem do produto">
+          <div class="modal-thumbs" id="modalThumbs"></div>
+        </div>
+      </div>
+    </div>
+  </div>
 
-  <script src="dashboard.js" defer></script>
+  <script src="dashboard.js"></script>
 </body>
 </html>
