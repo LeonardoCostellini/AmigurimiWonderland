@@ -1,6 +1,8 @@
 const { Pool, neonConfig } = require('@neondatabase/serverless')
-const jwt = require('jsonwebtoken')
 const ws = require('ws')
+
+neonConfig.webSocketConstructor = ws
+
 
 // 🔥 OBRIGATÓRIO no Neon Serverless
 neonConfig.webSocketConstructor = ws
