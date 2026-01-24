@@ -46,9 +46,15 @@ module.exports = async (req, res) => {
     if (req.method === 'POST') {
       const { name, description, price, images } = req.body || {}
 
-      if (!name || !price || !Array.isArray(images)) {
+      if (
+        typeof name !== 'string' ||
+        price === undefined ||
+        price === null ||
+        (images && !Array.isArray(images))
+      ) {
         return res.status(400).json({ error: 'Dados inválidos' })
       }
+
 
       const { rows } = await pool.query(`
         INSERT INTO products (name, description, price, images)
