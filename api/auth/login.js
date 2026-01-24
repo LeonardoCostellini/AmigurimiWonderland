@@ -1,30 +1,20 @@
-const { Pool } = require('@neondatabase/serverless')
+const { PrismaClient } = require('@prisma/client')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  ssl: true
-})
+const prisma = new PrismaClient()
 
-module.exports = async (req, res) => {
+module.exports = async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' })
   }
 
   try {
-    const { email, password } = req.body || {}
+    const { email, password } = req.body
 
-    if (!email || !password) {
-      return res.status(400).json({ error: 'Email e senha obrigatórios' })
-    }
-
-    const { rows } = await pool.query(
-      'SELECT id, email, password FROM admins WHERE email = $1 LIMIT 1',
-      [email]
-    )
-
-    const admin = rows[0]
+    const admin = await prisma.admin.findUnique({
+      where: { email }
+    })
 
     if (!admin) {
       return res.status(401).json({ error: 'Credenciais inválidas' })
@@ -45,7 +35,7 @@ module.exports = async (req, res) => {
     return res.status(200).json({ token })
 
   } catch (err) {
-    console.error('LOGIN ERROR:', err)
+    console.error(err)
     return res.status(500).json({ error: 'Erro interno' })
   }
 }
