@@ -1,3 +1,6 @@
+const nameInput = document.getElementById('name')
+const descriptionInput = document.getElementById('description')
+const priceInput = document.getElementById('price')
 const form = document.getElementById('productForm')
 const productsDiv = document.getElementById('products')
 
@@ -53,11 +56,12 @@ async function loadProducts() {
 form.addEventListener('submit', async e => {
   e.preventDefault()
 
-  const data = {
-    name: name.value.trim(),
-    description: description.value.trim(),
-    price: Number(price.value)
-  }
+const data = {
+  name: nameInput.value.trim(),
+  description: descriptionInput.value.trim(),
+  price: Number(priceInput.value)
+}
+
 
   if (!data.name || isNaN(data.price)) {
     alert('Preencha nome e preço corretamente')
@@ -106,9 +110,10 @@ async function editProduct(id) {
 
   editingId = id
 
-  name.value = p.name
-  description.value = p.description || ''
-  price.value = p.price
+nameInput.value = p.name
+descriptionInput.value = p.description || ''
+priceInput.value = p.price
+
 }
 
 // ================= EXCLUIR =================
