@@ -6,7 +6,7 @@ const pool = new Pool({
   ssl: true
 })
 
-function auth(req, res) {
+function auth(req) {
   const header = req.headers.authorization
   if (!header) return null
 
@@ -28,14 +28,14 @@ module.exports = async (req, res) => {
       const { rows } = await pool.query(`
         SELECT id, name, description, price, images
         FROM products
-        ORDER BY "createdAt" DESC
+        ORDER BY id DESC
       `)
 
       return res.status(200).json(rows)
     }
 
-    // 🔒 A PARTIR DAQUI → ADMIN
-    const user = auth(req, res)
+    // 🔒 ADMIN
+    const user = auth(req)
     if (!user) {
       return res.status(401).json({ error: 'Não autorizado' })
     }
@@ -44,29 +44,32 @@ module.exports = async (req, res) => {
     // CRIAR
     // ======================
     if (req.method === 'POST') {
+      if (typeof req.body === 'string') {
+        req.body = JSON.parse(req.body)
+      }
+
       const { name, description, price, images } = req.body || {}
 
       if (
         typeof name !== 'string' ||
+        name.trim() === '' ||
         price === undefined ||
         price === null ||
-        (images && !Array.isArray(images))
+        !Array.isArray(images)
       ) {
         return res.status(400).json({ error: 'Dados inválidos' })
       }
 
-
-const { rows } = await pool.query(`
-  INSERT INTO products (name, description, price, images)
-  VALUES ($1, $2, $3, $4)
-  RETURNING *
-`, [
-  name,
-  description || '',
-  Number(price),
-  JSON.stringify(images ?? [])
-])
-
+      const { rows } = await pool.query(`
+        INSERT INTO products (name, description, price, images)
+        VALUES ($1, $2, $3, $4)
+        RETURNING id, name, description, price, images
+      `, [
+        name.trim(),
+        description || '',
+        Number(price),
+        images // 👈 ARRAY DIRETO (TEXT[])
+      ])
 
       return res.status(201).json(rows[0])
     }
@@ -75,6 +78,10 @@ const { rows } = await pool.query(`
     // ATUALIZAR
     // ======================
     if (req.method === 'PUT') {
+      if (typeof req.body === 'string') {
+        req.body = JSON.parse(req.body)
+      }
+
       const { id } = req.query
       if (!id) return res.status(400).json({ error: 'ID obrigatório' })
 
@@ -87,12 +94,12 @@ const { rows } = await pool.query(`
           price = COALESCE($3, price),
           images = COALESCE($4, images)
         WHERE id = $5
-        RETURNING *
+        RETURNING id, name, description, price, images
       `, [
         name ?? null,
         description ?? null,
         price ?? null,
-        images ? JSON.stringify(images) : null,
+        images ?? null,
         id
       ])
 
@@ -113,7 +120,10 @@ const { rows } = await pool.query(`
     return res.status(405).json({ error: 'Method not allowed' })
 
   } catch (err) {
-    console.error('PRODUCTS API ERROR:', err)
-    return res.status(500).json({ error: 'Erro interno' })
+    console.error('🔥 PRODUCTS API ERROR:', err)
+    return res.status(500).json({
+      error: 'Erro interno',
+      message: err.message
+    })
   }
 }
