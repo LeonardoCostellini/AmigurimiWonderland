@@ -42,29 +42,32 @@ module.exports = async (req, res) => {
     }
 
     // ================= CRIAR =================
-    if (req.method === 'POST') {
-      const { name, description, price, images } = req.body || {}
+if (req.method === 'POST') {
+  const { name, description, price, images } = req.body || {}
 
-      // 👉 criar EXIGE ao menos 1 imagem
-      if (!name || !price || !Array.isArray(images) || images.length === 0) {
-        return res.status(400).json({
-          error: 'Nome, preço e ao menos 1 imagem são obrigatórios'
-        })
-      }
+  const cleanImages = Array.isArray(images)
+    ? images.map(i => String(i).trim()).filter(i => i.startsWith('http'))
+    : []
 
-      const { rows } = await pool.query(`
-        INSERT INTO products (name, description, price, images)
-        VALUES ($1, $2, $3, $4::jsonb)
-        RETURNING *
-      `, [
-        name,
-        description || '',
-        price,
-        JSON.stringify(images)
-      ])
+  if (!name || !price || cleanImages.length === 0) {
+    return res.status(400).json({
+      error: 'Nome, preço e ao menos 1 imagem válida são obrigatórios'
+    })
+  }
 
-      return res.status(201).json(rows[0])
-    }
+  const { rows } = await pool.query(`
+    INSERT INTO products (name, description, price, images)
+    VALUES ($1, $2, $3, $4::jsonb)
+    RETURNING *
+  `, [
+    name,
+    description || '',
+    price,
+    JSON.stringify(cleanImages)
+  ])
+
+  return res.status(201).json(rows[0])
+}
 
     // ================= ATUALIZAR =================
     if (req.method === 'PUT') {

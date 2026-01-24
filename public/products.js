@@ -1,0 +1,25 @@
+const { Pool } = require('@neondatabase/serverless')
+
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  ssl: true
+})
+
+module.exports = async (req, res) => {
+  try {
+    if (req.method !== 'GET') {
+      return res.status(405).json({ error: 'Method not allowed' })
+    }
+
+    const { rows } = await pool.query(`
+      SELECT id, name, description, price, images
+      FROM products
+      ORDER BY "createdAt" DESC
+    `)
+
+    return res.status(200).json(rows)
+  } catch (err) {
+    console.error('PUBLIC PRODUCTS ERROR:', err)
+    return res.status(500).json({ error: 'Erro interno' })
+  }
+}

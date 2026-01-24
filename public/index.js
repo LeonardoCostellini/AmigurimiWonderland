@@ -1,27 +1,44 @@
 async function loadProducts() {
-  const res = await fetch('/api/products')
-  const products = await res.json()
+  try {
+    const res = await fetch('/api/public/products')
+    const products = await res.json()
 
-  const grid = document.getElementById('productsGrid')
-  grid.innerHTML = ''
+    if (!res.ok) {
+      throw new Error(`Erro API: ${res.status}`)
+    }
 
-  products.forEach(p => {
-    grid.innerHTML += `
-      <div class="product-card">
-        <div class="product-image">
-          <img src="${p.imageUrl}" alt="${p.name}">
-        </div>
-        <div class="product-info">
-          <h3>${p.name}</h3>
-          <p class="product-description">${p.description}</p>
-          <div class="product-footer">
-            <span class="product-price">R$ ${Number(p.price).toFixed(2)}</span>
-            <button class="buy-btn">Comprar</button>
+    const grid = document.getElementById('productsGrid')
+    grid.innerHTML = ''
+
+    products.forEach(p => {
+      const image = Array.isArray(p.images) && p.images.length > 0
+        ? p.images[0]
+        : '/img/placeholder.png' // opcional
+
+      grid.innerHTML += `
+        <div class="product-card">
+          <div class="product-image">
+            <img src="${image}" alt="${p.name}">
+          </div>
+
+          <div class="product-info">
+            <h3>${p.name}</h3>
+            <p class="product-description">${p.description || ''}</p>
+
+            <div class="product-footer">
+              <span class="product-price">
+                R$ ${Number(p.price).toFixed(2)}
+              </span>
+              <button class="buy-btn">Comprar</button>
+            </div>
           </div>
         </div>
-      </div>
-    `
-  })
+      `
+    })
+
+  } catch (err) {
+    console.error('Erro ao carregar produtos:', err)
+  }
 }
 
 loadProducts()
