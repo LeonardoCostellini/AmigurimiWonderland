@@ -1,7 +1,3 @@
-const { Pool, neonConfig } = require('@neondatabase/serverless')
-const ws = require('ws')
-
-neonConfig.webSocketConstructor = ws
 const form = document.getElementById('productForm')
 const productsDiv = document.getElementById('products')
 
@@ -27,14 +23,13 @@ function getToken() {
 
 // ================= LISTAR =================
 async function loadProducts() {
-  const res = await fetch('/api/products', {
-    headers: {
-      Authorization: `Bearer ${getToken()}`
-    }
-  })
-
+  const res = await fetch('/api/products')
   const data = await res.json()
-  if (!res.ok) return alert(data.error)
+
+  if (!res.ok) {
+    alert(data.error || 'Erro ao carregar produtos')
+    return
+  }
 
   productsDiv.innerHTML = ''
 
@@ -42,7 +37,7 @@ async function loadProducts() {
     productsDiv.innerHTML += `
       <div class="card">
         <div class="card-images">
-          ${(p.images || []).map(img => `<img src="${img}" alt="${p.name}">`).join('')}
+          ${(p.images || []).map(img => `<img src="${img}">`).join('')}
         </div>
 
         <h3>${p.name}</h3>
@@ -61,22 +56,14 @@ form.addEventListener('submit', async e => {
   e.preventDefault()
 
   const images = [
-    imageUrl1.value.trim(),
-    imageUrl2.value.trim(),
-    imageUrl3.value.trim()
+    imageUrl1.value,
+    imageUrl2.value,
+    imageUrl3.value
   ].filter(Boolean)
-
-  if (!nameInput.value.trim()) {
-    return alert('Nome é obrigatório')
-  }
-
-  if (images.length === 0) {
-    return alert('Informe pelo menos uma URL de imagem')
-  }
 
   const data = {
     name: nameInput.value.trim(),
-    description: descriptionInput?.value?.trim() || '',
+    description: descriptionInput.value.trim(),
     price: Number(priceInput.value),
     images
   }
@@ -105,12 +92,10 @@ form.addEventListener('submit', async e => {
 
 // ================= EDITAR =================
 async function editProduct(id) {
-  const res = await fetch('/api/products', {
-    headers: { Authorization: `Bearer ${getToken()}` }
-  })
-
+  const res = await fetch('/api/products')
   const products = await res.json()
-  const p = products.find(p => Number(p.id) === Number(id))
+
+  const p = products.find(p => p.id === id)
   if (!p) return
 
   editingId = id
