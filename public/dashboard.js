@@ -77,13 +77,14 @@ form.addEventListener('submit', async e => {
     : '/api/products'
 
   const res = await fetch(url, {
-    method,
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${getToken()}`
-    },
-    body: JSON.stringify(data)
-  })
+  method,
+  headers: {
+    'Content-Type': 'application/json',
+    'Authorization': `Bearer ${localStorage.getItem('token')}`
+  },
+  body: JSON.stringify(data)
+})
+
 
   const result = await res.json()
 
@@ -125,12 +126,12 @@ async function editProduct(id) {
 async function deleteProduct(id) {
   if (!confirm('Excluir produto?')) return
 
-  const res = await fetch(`/api/products?id=${id}`, {
-    method: 'DELETE',
-    headers: {
-      Authorization: `Bearer ${getToken()}`
-    }
-  })
+  const res = await fetch(`/api/products/${id}`, {
+  method: 'DELETE',
+  headers: {
+    'Authorization': `Bearer ${localStorage.getItem('token')}`
+  }
+})
 
   const result = await res.json()
 

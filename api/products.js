@@ -8,29 +8,22 @@ const pool = new Pool({
 
 function auth(req, res) {
   const header = req.headers.authorization
-
-  if (!header) {
-    res.status(401).json({ error: 'Token não enviado' })
-    return null
-  }
-
-  const token = header.split(' ')[1]
+  if (!header) return null
 
   try {
+    const token = header.split(' ')[1]
     return jwt.verify(token, process.env.JWT_SECRET)
-  } catch (err) {
-    console.error('JWT ERROR:', err)
-    res.status(401).json({ error: 'Token inválido' })
+  } catch {
     return null
   }
 }
 
 module.exports = async (req, res) => {
   try {
-    const user = auth(req, res)
-    if (!user) return
 
-    // ================= LISTAR =================
+    // ======================
+    // LISTAR (PÚBLICO)
+    // ======================
     if (req.method === 'GET') {
       const { rows } = await pool.query(`
         SELECT id, name, description, price, images
@@ -41,70 +34,67 @@ module.exports = async (req, res) => {
       return res.status(200).json(rows)
     }
 
-    // ================= CRIAR =================
-if (req.method === 'POST') {
-  const { name, description, price, images } = req.body || {}
+    // 🔒 A PARTIR DAQUI → ADMIN
+    const user = auth(req, res)
+    if (!user) {
+      return res.status(401).json({ error: 'Não autorizado' })
+    }
 
-  const cleanImages = Array.isArray(images)
-    ? images.map(i => String(i).trim()).filter(i => i.startsWith('http'))
-    : []
+    // ======================
+    // CRIAR
+    // ======================
+    if (req.method === 'POST') {
+      const { name, description, price, images } = req.body || {}
 
-  if (!name || !price || cleanImages.length === 0) {
-    return res.status(400).json({
-      error: 'Nome, preço e ao menos 1 imagem válida são obrigatórios'
-    })
-  }
+      if (!name || !price || !Array.isArray(images)) {
+        return res.status(400).json({ error: 'Dados inválidos' })
+      }
 
-  const { rows } = await pool.query(`
-    INSERT INTO products (name, description, price, images)
-    VALUES ($1, $2, $3, $4::jsonb)
-    RETURNING *
-  `, [
-    name,
-    description || '',
-    price,
-    JSON.stringify(cleanImages)
-  ])
+      const { rows } = await pool.query(`
+        INSERT INTO products (name, description, price, images)
+        VALUES ($1, $2, $3, $4)
+        RETURNING *
+      `, [
+        name,
+        description || '',
+        Number(price),
+        JSON.stringify(images)
+      ])
 
-  return res.status(201).json(rows[0])
-}
+      return res.status(201).json(rows[0])
+    }
 
-    // ================= ATUALIZAR =================
+    // ======================
+    // ATUALIZAR
+    // ======================
     if (req.method === 'PUT') {
       const { id } = req.query
       if (!id) return res.status(400).json({ error: 'ID obrigatório' })
 
       const { name, description, price, images } = req.body || {}
 
-      const imagesValue =
-        Array.isArray(images) && images.length > 0
-          ? JSON.stringify(images)
-          : null
-
       const { rows } = await pool.query(`
-        UPDATE products
-        SET
+        UPDATE products SET
           name = COALESCE($1, name),
           description = COALESCE($2, description),
           price = COALESCE($3, price),
-          images = CASE
-            WHEN $4 IS NOT NULL THEN $4::jsonb
-            ELSE images
-          END
+          images = COALESCE($4, images)
         WHERE id = $5
         RETURNING *
       `, [
         name ?? null,
         description ?? null,
         price ?? null,
-        imagesValue,
+        images ? JSON.stringify(images) : null,
         id
       ])
 
       return res.status(200).json(rows[0])
     }
 
-    // ================= EXCLUIR =================
+    // ======================
+    // EXCLUIR
+    // ======================
     if (req.method === 'DELETE') {
       const { id } = req.query
       if (!id) return res.status(400).json({ error: 'ID obrigatório' })
@@ -116,7 +106,7 @@ if (req.method === 'POST') {
     return res.status(405).json({ error: 'Method not allowed' })
 
   } catch (err) {
-    console.error('PRODUCTS API FATAL ERROR:', err)
+    console.error('PRODUCTS API ERROR:', err)
     return res.status(500).json({ error: 'Erro interno' })
   }
 }
