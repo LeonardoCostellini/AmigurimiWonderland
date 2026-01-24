@@ -124,25 +124,43 @@
     <div class="error-message" id="errorMessage"></div>
     <div class="loading" id="loading">Carregando...</div>
 
-    <script>
+<script>
 async function login() {
   const email = document.getElementById('email').value
   const password = document.getElementById('password').value
 
-  const res = await fetch('/api/auth/login', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ email, password })
-  })
+  const errorBox = document.getElementById('errorMessage')
+  errorBox.style.display = 'none'
 
-  const data = await res.json()
+  try {
+    const res = await fetch('/api/auth/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password })
+    })
 
-  if (!res.ok) {
-    alert(data.error)
-    return
+    const text = await res.text()
+    let data
+
+    try {
+      data = JSON.parse(text)
+    } catch {
+      throw new Error('Resposta inválida do servidor')
+    }
+
+    if (!res.ok) {
+      errorBox.textContent = data.error || 'Erro ao fazer login'
+      errorBox.style.display = 'block'
+      return
+    }
+
+    localStorage.setItem('token', data.token)
+    window.location.href = '/dashboard.html'
+
+  } catch (err) {
+    errorBox.textContent = err.message || 'Erro inesperado'
+    errorBox.style.display = 'block'
   }
-
-  localStorage.setItem('token', data.token)
-  window.location.href = '/dashboard.html'
 }
 </script>
+
