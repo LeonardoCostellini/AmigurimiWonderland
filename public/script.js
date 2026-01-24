@@ -19,17 +19,21 @@ window.addEventListener('DOMContentLoaded', () => {
   }, 3500)
 })
 
-// ==================== FILTROS (visual por enquanto) ====================
+// ==================== FILTROS (FUNCIONAL) ====================
 const filters = document.getElementById('filters')
 if (filters) {
   filters.addEventListener('click', (e) => {
-    if (e.target.classList.contains('pill')) {
-      document.querySelectorAll('.pill').forEach(btn =>
-        btn.classList.remove('active')
-      )
-      e.target.classList.add('active')
-      currentCategory = e.target.dataset.category
-    }
+    if (!e.target.classList.contains('pill')) return
+
+    document.querySelectorAll('.pill')
+      .forEach(btn => btn.classList.remove('active'))
+
+    e.target.classList.add('active')
+
+    currentCategory = e.target.dataset.category || 'Todos'
+
+    // 🔥 aqui está o ponto-chave
+    carregarProdutos(currentCategory)
   })
 }
 
@@ -155,12 +159,18 @@ function loadCartFromStorage() {
 }
 
 // ==================== PRODUTOS (API) ====================
-async function carregarProdutos() {
+async function carregarProdutos(category = 'Todos') {
   const container = document.getElementById('productsGrid')
   if (!container) return
 
   try {
-    const res = await fetch('/api/products')
+    const url =
+  category && category !== 'Todos'
+    ? `/api/products?category=${encodeURIComponent(category)}`
+    : '/api/products'
+
+const res = await fetch(url)
+
 
     if (!res.ok) {
       throw new Error(`Erro API: ${res.status}`)
