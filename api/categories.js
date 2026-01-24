@@ -16,7 +16,7 @@ module.exports = async (req, res) => {
 
     res.status(200).json(rows.map(r => r.category))
   } catch (err) {
-    console.error('CATEGORIES ERROR:', err)
-    res.status(500).json({ error: err.message })
+    console.error(err)
+    res.status(500).json({ error: 'Erro ao carregar categorias' })
   }
 }

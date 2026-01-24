@@ -44,38 +44,7 @@ async function loadCategories() {
   const filters = document.getElementById('filters')
   filters.innerHTML = ''
 
-  // Botão TODOS
-  filters.innerHTML += `
-    <button class="pill active" onclick="setActive(this); loadProducts()">
-      Todos
-    </button>
-  `
-
-  categories.forEach(cat => {
-    filters.innerHTML += `
-      <button class="pill"
-        onclick="setActive(this); loadProducts('${cat}')">
-        ${cat}
-      </button>
-    `
-  })
-}
-
-function setActive(button) {
-  document.querySelectorAll('.pill').forEach(b => b.classList.remove('active'))
-  button.classList.add('active')
-}
-
-
-
-async function loadCategories() {
-  const res = await fetch('/api/categories')
-  const categories = await res.json()
-
-  const filters = document.getElementById('filters')
-  filters.innerHTML = ''
-
-  // Botão TODOS
+  // TODOS
   filters.innerHTML += `
     <button class="pill active" onclick="setActive(this); loadProducts()">
       Todos
@@ -99,4 +68,3 @@ function setActive(button) {
 
 loadCategories()
 loadProducts()
-
