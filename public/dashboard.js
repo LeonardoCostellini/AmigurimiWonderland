@@ -32,16 +32,11 @@ async function loadProducts() {
   productsDiv.innerHTML = ''
 
   data.forEach(p => {
-    const images = p.images || []
-
     productsDiv.innerHTML += `
       <div class="card">
-        <div class="card-images">
-          ${images.map(img => `<img src="${img}" alt="${p.name}">`).join('')}
-        </div>
-
         <div class="card-body">
           <h3>${p.name}</h3>
+          <p>${p.description || ''}</p>
           <p class="price">R$ ${Number(p.price).toFixed(2)}</p>
 
           <div class="actions">
@@ -58,17 +53,15 @@ async function loadProducts() {
 form.addEventListener('submit', async e => {
   e.preventDefault()
 
-  const images = [
-    imageUrl1.value,
-    imageUrl2.value,
-    imageUrl3.value
-  ].filter(Boolean)
-
   const data = {
-    name: name.value,
-    description: description.value,
-    price: Number(price.value),
-    images
+    name: name.value.trim(),
+    description: description.value.trim(),
+    price: Number(price.value)
+  }
+
+  if (!data.name || isNaN(data.price)) {
+    alert('Preencha nome e preço corretamente')
+    return
   }
 
   const method = editingId ? 'PUT' : 'POST'
@@ -77,18 +70,18 @@ form.addEventListener('submit', async e => {
     : '/api/products'
 
   const res = await fetch(url, {
-  method,
-  headers: {
-    'Content-Type': 'application/json',
-    'Authorization': `Bearer ${localStorage.getItem('token')}`
-  },
-  body: JSON.stringify(data)
-})
-
+    method,
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${getToken()}`
+    },
+    body: JSON.stringify(data)
+  })
 
   const result = await res.json()
 
   if (!res.ok) {
+    console.error(result)
     alert(result.error || 'Erro ao salvar produto')
     return
   }
@@ -116,26 +109,23 @@ async function editProduct(id) {
   name.value = p.name
   description.value = p.description || ''
   price.value = p.price
-
-  imageUrl1.value = p.images?.[0] || ''
-  imageUrl2.value = p.images?.[1] || ''
-  imageUrl3.value = p.images?.[2] || ''
 }
 
 // ================= EXCLUIR =================
 async function deleteProduct(id) {
   if (!confirm('Excluir produto?')) return
 
-  const res = await fetch(`/api/products/${id}`, {
-  method: 'DELETE',
-  headers: {
-    'Authorization': `Bearer ${localStorage.getItem('token')}`
-  }
-})
+  const res = await fetch(`/api/products?id=${id}`, {
+    method: 'DELETE',
+    headers: {
+      Authorization: `Bearer ${getToken()}`
+    }
+  })
 
   const result = await res.json()
 
   if (!res.ok) {
+    console.error(result)
     alert(result.error || 'Erro ao excluir produto')
     return
   }
