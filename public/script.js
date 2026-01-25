@@ -296,3 +296,15 @@ async function carregarCategorias() {
     `
   })
 }
+
+
+const modalOverlay = document.getElementById('productModal')
+const closeModalBtn = document.getElementById('closeModalBtn')
+
+closeModalBtn?.addEventListener('click', closeProductModal)
+
+modalOverlay?.addEventListener('click', (e) => {
+  if (e.target === modalOverlay) {
+    closeProductModal()
+  }
+})

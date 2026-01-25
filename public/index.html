@@ -229,34 +229,37 @@
     </div>
   </div>
 
-  <!-- MODAL PRODUTO -->
-  <div class="modal-overlay" id="productModal" onclick="closeProductModal()">
-    <div class="modal modal-product" onclick="event.stopPropagation()">
+<!-- MODAL PRODUTO -->
+<div class="modal-overlay" id="productModal">
+  <div class="modal modal-product">
 
-      <button class="modal-close" onclick="closeProductModal()">✕</button>
+    <button class="modal-close" id="closeModalBtn">✕</button>
 
-      <div class="modal-product-content">
+    <div class="modal-product-content">
 
-        <!-- ESQUERDA -->
-        <div class="modal-images">
-          <img id="modalMainImage" src="" alt="Produto">
+      <!-- ESQUERDA -->
+      <div class="modal-images">
+        <img id="modalMainImage" src="" alt="Produto">
+        <div class="modal-thumbs" id="modalThumbs"></div>
+      </div>
 
-          <div class="modal-thumbs" id="modalThumbs"></div>
-        </div>
+      <!-- DIREITA -->
+      <div class="modal-info">
+        <h2 id="modalTitle"></h2>
+        <p id="modalDescription"></p>
+        <span id="modalPrice"></span>
 
-        <!-- DIREITA -->
-        <div class="modal-info">
-          <h2 id="modalTitle"></h2>
-          <p id="modalDescription"></p>
-          <span id="modalPrice"></span>
-
-          <button class="buy-btn" id="modalAddBtn">
-            Adicionar ao Carrinho
-          </button>
-        </div>
+        <button class="buy-btn" id="modalAddBtn">
+          Adicionar ao Carrinho
+        </button>
       </div>
     </div>
+
   </div>
+</div>
+
+
+
   <script src="script.js"></script>
 </body>
 

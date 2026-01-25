@@ -141,22 +141,20 @@ body {
 /* BOTÃO FECHAR (X) */
 .modal-close {
   position: fixed;
-  top: 14px;
-  right: 14px;
+  top: 12px;
+  right: 12px;
+  z-index: 2000;
   background: #ff4d4d;
   color: #fff;
   border: none;
-  width: 40px;
-  height: 40px;
+  width: 42px;
+  height: 42px;
   border-radius: 50%;
-  font-size: 18px;
+  font-size: 20px;
   font-weight: bold;
   cursor: pointer;
-  z-index: 2000;
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
+
 
 .modal-close:hover {
   background: #e63939;
