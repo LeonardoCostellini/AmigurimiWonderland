@@ -223,6 +223,267 @@
       opacity: 1;
       border-color: var(--yellow);
     }
+
+    /* ==================== VARIÁVEIS E RESET ==================== */
+:root {
+  --yellow: #FFC107;
+  --yellow-hover: #FFB000;
+  --blue: #4F46E5;
+  --red: #EF4444;
+  --text: #2F2F2F;
+  --muted: #8A8A8A;
+  --border: #EDEDED;
+  --bg: #FFFDF7;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'Poppins', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  overflow-x: hidden;
+}
+
+/* ==================== HEADER E TABS ==================== */
+.header {
+  padding: 20px 40px;
+  background: white;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.header-title {
+  font-size: 22px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.tabs {
+  padding: 15px 40px;
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  background: white;
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.tab {
+  padding: 10px 22px;
+  border-radius: 50px;
+  border: 1px solid var(--border);
+  background: white;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.tab.active {
+  background: var(--yellow);
+  border-color: var(--yellow);
+  box-shadow: 0 4px 10px rgba(255, 193, 7, 0.2);
+}
+
+.tab:hover:not(.active) {
+  background: #fdfdfd;
+  transform: translateY(-2px);
+}
+
+/* ==================== FORMULÁRIO (ESTILIZADO) ==================== */
+.content {
+  padding: 30px 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+#productForm {
+  max-width: 800px;
+  background: white;
+  padding: 30px;
+  border-radius: 24px;
+  margin: 0 auto 50px auto;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 15px;
+  animation: fadeIn 0.6s ease-out;
+}
+
+#productForm input, #productForm textarea {
+  width: 100%;
+  padding: 12px 16px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  font-family: inherit;
+  background: #FAFAFA;
+  transition: all 0.3s;
+}
+
+#productForm input:focus, #productForm textarea:focus {
+  border-color: var(--yellow);
+  background: white;
+  outline: none;
+  box-shadow: 0 0 0 4px rgba(255, 193, 7, 0.1);
+}
+
+/* Itens que ocupam a largura toda do formulário */
+#productForm #name, #productForm #description, #productForm button {
+  grid-column: span 2;
+}
+
+#productForm textarea { height: 100px; resize: none; }
+
+#productForm button {
+  background: var(--yellow);
+  padding: 15px;
+  border-radius: 15px;
+  font-weight: 700;
+  font-size: 16px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s;
+  margin-top: 10px;
+}
+
+#productForm button:hover {
+  background: var(--yellow-hover);
+  transform: scale(1.02);
+}
+
+/* ==================== GRID E CARDS (ALINHAMENTO TOTAL) ==================== */
+.products-grid {
+  display: grid;
+  /* Define colunas iguais no PC */
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 25px;
+  align-items: stretch; /* Força todos os cards da mesma linha a terem a mesma altura */
+}
+
+.card {
+  background: white;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  animation: fadeUp 0.5s ease backwards;
+  
+  /* Flexbox vertical para controlar o empilhamento interno */
+  display: flex;
+  flex-direction: column;
+  height: 100%; 
+}
+
+.card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+}
+
+.card-main-image {
+  width: 100%;
+  height: 220px;
+  object-fit: cover;
+  background: #f5f5f5;
+  flex-shrink: 0; /* Garante que a imagem não mude de tamanho */
+}
+
+.card-content {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1; /* Faz esta área ocupar todo o espaço disponível entre a imagem e os botões */
+}
+
+.card-content h3 { 
+  font-size: 18px; 
+  margin-bottom: 8px;
+  /* Limita o título a 2 linhas e trava a altura */
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  height: 50px; /* ALTURA FIXA: Mantém o alinhamento mesmo com nomes curtos */
+}
+
+/* Estilização do Preço (se você usar a classe .price ou um <p>) */
+.card-content .price {
+  font-weight: 700;
+  color: var(--blue);
+  font-size: 1.1rem;
+  margin-bottom: 10px;
+}
+
+.card-content p { 
+  font-size: 14px; 
+  color: var(--muted); 
+  margin-bottom: 15px;
+  /* Limita a descrição a 3 linhas e trava a altura */
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  height: 60px; /* ALTURA FIXA: Evita a gangorra na descrição */
+}
+
+.card-actions {
+  display: flex;
+  gap: 10px;
+  padding: 20px;
+  margin-top: auto; /* EMPURRA PARA O FINAL: Mágica do Flexbox */
+  border-top: 1px solid var(--border); /* Opcional: uma linha sutil para separar */
+}
+
+.btn-edit, .btn-delete {
+  flex: 1;
+  padding: 12px;
+  border-radius: 12px;
+  border: none;
+  font-weight: 600;
+  cursor: pointer;
+  color: white;
+  transition: 0.3s;
+  font-size: 13px;
+  white-space: nowrap; /* Impede que o texto do botão quebre */
+}
+
+.btn-edit { background: var(--blue); }
+.btn-delete { background: var(--red); }
+
+/* DASHBOARD: Organizado com texto limitado */
+.card {
+    display: flex !important;
+    flex-direction: column !important;
+    height: 100% !important;
+}
+
+.card-content {
+    flex-grow: 1 !important;
+    display: flex !important;
+    flex-direction: column !important;
+}
+
+/* No dashboard, limitamos a descrição para manter o padrão */
+.card-content p {
+    display: -webkit-box !important;
+    -webkit-line-clamp: 3 !important; /* 3 linhas no máximo */
+    -webkit-box-orient: vertical !important;
+    overflow: hidden !important;
+    margin-bottom: 15px !important;
+    min-height: 60px !important;
+}
+
+.card-actions {
+    margin-top: auto !important;
+    display: flex !important;
+    gap: 10px !important;
+    padding: 15px !important;
+}
   </style>
 
   <script>
