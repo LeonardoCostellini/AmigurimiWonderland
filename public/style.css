@@ -1359,102 +1359,113 @@ button {
 }
 
 /* ============================================================
-   SOLUÇÃO FINAL: PRODUTOS EM LISTA E MENU COMPLETO
+   RESTAURAÇÃO FINAL: MENU PILL E CARRINHO FIXO ELEGANTE
    ============================================================ */
 
-/* 1. CORREÇÃO DO HEADER (MENU) NO CELULAR */
+/* 1. HEADER E MENU */
 @media (max-width: 768px) {
     .header {
-        display: block !important; /* Muda de flex para block para empilhar */
-        padding: 10px 15px !important;
-        text-align: center !important;
-        height: auto !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        padding: 20px 10px !important;
+        position: relative !important;
     }
 
     .logo {
-        justify-content: center !important;
         margin-bottom: 15px !important;
+        width: 100% !important;
+        justify-content: center !important;
     }
 
     .nav {
         display: flex !important;
-        flex-wrap: wrap !important; /* Garante que os itens quebrem linha se precisar */
+        flex-wrap: wrap !important;
         justify-content: center !important;
         gap: 8px !important;
         width: 100% !important;
-        margin-bottom: 10px !important;
+        padding: 0 10px !important;
     }
 
+    /* Links do Menu estilo Pastilha (Igual filtros) */
     .nav a {
-        font-size: 0.85rem !important;
-        padding: 6px 12px !important;
-        background: rgba(0,0,0,0.05) !important; /* Estilo de botões suaves */
-        border-radius: 20px !important;
-        white-space: nowrap !important;
+        background: #fff !important;
+        border: 1px solid var(--border) !important;
+        padding: 7px 14px !important;
+        border-radius: 999px !important;
+        font-size: 0.8rem !important;
+        color: var(--text) !important;
+        text-decoration: none !important;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.03) !important;
     }
 
-    /* Garante que o botão do carrinho não suma */
+    /* 2. O CARRINHO "BONITO E NO LUGAR CERTO" */
     .cart-btn {
-        margin: 5px auto !important;
-        width: 40px !important;
-        height: 40px !important;
+        position: absolute !important; /* Fixa ele num lugar só */
+        top: 15px !important;
+        right: 15px !important;
+        background: var(--accent) !important;
+        width: 45px !important;
+        height: 45px !important;
+        border-radius: 50% !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        box-shadow: 0 4px 10px rgba(255, 193, 7, 0.4) !important;
+        z-index: 1001 !important;
+        border: 2px solid #fff !important;
+    }
+
+    /* Ajuste do ícone e número dentro do carrinho */
+    .cart-icon {
+        font-size: 1.2rem !important;
+    }
+
+    .cart-badge {
+        background: var(--red) !important;
+        top: -2px !important;
+        right: -2px !important;
+        width: 20px !important;
+        height: 20px !important;
+        font-size: 0.7rem !important;
+        border: 2px solid #fff !important;
     }
 }
 
-/* 2. PRODUTOS EM CASCATA (UM EMBAIXO DO OUTRO) NO CELULAR */
+/* 3. AJUSTE DE PRODUTOS (CASCATA) */
 @media (max-width: 500px) {
     .products-grid {
         display: flex !important;
-        flex-direction: column !important; /* Força um produto por linha */
+        flex-direction: column !important;
         gap: 25px !important;
         padding: 15px !important;
     }
 
     .product-card {
-        width: 100% !important; /* Ocupa a largura total */
-        max-width: 100% !important;
+        width: 100% !important;
     }
 
     .product-image {
-        height: 300px !important; /* Foto maior e mais visível */
-    }
-
-    .product-info h3 {
-        font-size: 1.4rem !important; /* Texto do título nítido */
-    }
-
-    .product-price {
-        font-size: 1.6rem !important;
+        height: 300px !important;
     }
 }
 
-/* 3. AJUSTE DO MODAL PARA TEXTOS NÃO FICAREM GIGANTES */
+/* 4. MODAL E CORREÇÕES GERAIS */
 .modal-product {
-    width: 90% !important;
-    max-width: 400px !important;
-    border-radius: 15px !important;
+    width: 92% !important;
+    max-height: 85vh !important;
+    border-radius: 20px !important;
 }
 
-.modal-info h2 {
-    font-size: 1.3rem !important;
-    margin-top: 10px !important;
-}
-
-.modal-info p {
-    font-size: 0.9rem !important;
-    max-height: 100px;
-    overflow-y: auto; /* Se a descrição for longa, cria rolagem interna */
-}
-
-/* 4. FIX PARA O BOTÃO FECHAR (X) NO TOPO */
 .modal-close {
-    position: absolute !important;
-    top: 10px !important;
-    right: 10px !important;
-    z-index: 9999 !important;
     background: var(--accent) !important;
-    color: #fff !important;
-    border-radius: 50% !important;
-    width: 30px !important;
-    height: 30px !important;
+    color: #000 !important;
+    width: 32px !important;
+    height: 32px !important;
+}
+
+/* TIRA O VAZAMENTO DA TELA */
+html, body {
+    max-width: 100vw !important;
+    overflow-x: hidden !important;
 }
