@@ -1555,71 +1555,54 @@ body.modal-open {
    align-items: center;
 }
 
-/* ==================== CORREÇÃO DEFINITIVA DA VITRINE ==================== */
+/* ==================== AJUSTE DA VITRINE E PREÇO ==================== */
 
-/* 1. Garante que todos os cards da mesma linha tenham a mesma altura total */
-.products-grid {
-    display: grid !important;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)) !important;
-    gap: 2.5rem !important;
-    align-items: stretch !important; /* Estica os cards verticalmente */
-}
-
-/* 2. Configura o Card como uma coluna flexível */
 .product-card {
     display: flex !important;
     flex-direction: column !important;
-    height: 100% !important;
+    height: 100% !important; /* Força todos os cards a terem a mesma altura */
     background: #fff;
     border-radius: 20px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
     overflow: hidden;
-    transition: all 0.4s ease;
 }
 
-/* 3. Área de informações (Título + Descrição) */
 .product-info {
     padding: 1.5rem !important;
     display: flex !important;
     flex-direction: column !important;
-    flex-grow: 1 !important; /* Ocupa todo o espaço do meio do card */
+    flex: 1 !important; /* Faz o container de texto ocupar todo o espaço central */
 }
 
-/* 4. Descrição Completa */
+/* Garante que a descrição não empurre o preço de forma desigual */
 .product-description {
-    font-size: 0.95rem !important;
-    color: var(--muted) !important;
-    line-height: 1.5 !important;
-    margin-bottom: 2rem !important;
-    height: auto !important; /* Garante que o texto não seja cortado */
-    display: block !important;
-    overflow: visible !important;
-    flex-grow: 1 !important; /* Empurra o que estiver abaixo dela */
+    flex-grow: 1 !important; 
+    margin-bottom: 1.5rem !important;
+    font-size: 0.95rem;
+    line-height: 1.5;
 }
 
-/* 5. RODAPÉ (Preço e Botão) - Sempre alinhado no "chão" do card */
+/* RODAPÉ DO CARD (Preço + Botão) */
 .product-footer {
     display: flex !important;
     justify-content: space-between !important;
     align-items: center !important;
-    padding: 0 1.5rem 1.5rem 1.5rem !important; /* Espaçamento interno */
-    margin-top: auto !important; /* Mágica: Empurra este bloco para o fim do card */
-    background: #fff;
+    margin-top: auto !important; /* Empurra o conjunto para o fundo do card */
+    padding: 0 1.5rem 1.5rem 1.5rem !important;
 }
 
-/* Ajuste fino nos textos para evitar saltos */
-.product-info h3 {
-    min-height: 3.2rem; /* Reserva espaço para nomes de 2 linhas */
-    margin-bottom: 10px !important;
-}
-
+/* AJUSTE DO PREÇO: Menos espalhafatoso e bem alinhado */
 .product-price {
-    font-size: 1.5rem !important;
+    font-size: 1.25rem !important; /* Tamanho equilibrado */
     font-weight: 700 !important;
+    color: var(--text);
+    white-space: nowrap; /* Impede que o R$ quebre linha */
     margin: 0 !important;
 }
 
-/* Ajuste na imagem para manter proporção no PC */
-.product-image {
-    height: 280px !important;
-    flex-shrink: 0 !important; /* Impede a imagem de amassar */
+/* BOTÃO COMPRAR: Ajuste de padding para não deformar o card */
+.buy-btn {
+    padding: 0.6rem 1.2rem !important;
+    font-size: 0.9rem !important;
+    border-radius: 25px;
 }
