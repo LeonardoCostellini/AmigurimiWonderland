@@ -229,7 +229,7 @@ body {
 .btn-edit { background: var(--blue); }
 .btn-delete { background: var(--red); }
 
-/* ALINHAMENTO DASHBOARD */
+/* DASHBOARD: Organizado com texto limitado */
 .card {
     display: flex !important;
     flex-direction: column !important;
@@ -237,24 +237,24 @@ body {
 }
 
 .card-content {
+    flex-grow: 1 !important;
     display: flex !important;
     flex-direction: column !important;
-    flex-grow: 1 !important; /* Faz o conteúdo esticar */
 }
 
-/* Descrição no Dashboard */
+/* No dashboard, limitamos a descrição para manter o padrão */
 .card-content p {
-    flex-grow: 1 !important;
-    margin-bottom: 20px !important;
-    /* Altura mínima para descrições curtas não puxarem o botão para cima */
-    min-height: 80px !important; 
+    display: -webkit-box !important;
+    -webkit-line-clamp: 3 !important; /* 3 linhas no máximo */
+    -webkit-box-orient: vertical !important;
+    overflow: hidden !important;
+    margin-bottom: 15px !important;
+    min-height: 60px !important;
 }
 
-/* Container dos botões Editar/Excluir */
 .card-actions {
-    margin-top: auto !important; /* Garante que fiquem no "chão" do card */
+    margin-top: auto !important;
     display: flex !important;
     gap: 10px !important;
     padding: 15px !important;
-    border-top: 1px solid #eee !important;
 }

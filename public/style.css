@@ -1499,31 +1499,44 @@ body.modal-open {
     overflow: hidden !important;
 }
 
-/* ALINHAMENTO VITRINE */
+/* VITRINE: Texto 100% visível e botões alinhados no rodapé */
 .product-card {
     display: flex !important;
     flex-direction: column !important;
     height: 100% !important;
-    justify-content: space-between !important; /* Distribui o espaço */
+    background: #fff;
+    border-radius: 20px;
     padding-bottom: 20px !important;
 }
 
-/* Container do Preço e Botão */
-.product-info-footer {
+.product-card img {
+    height: 250px !important;
+    object-fit: cover !important;
+    flex-shrink: 0 !important;
+}
+
+.product-card-content {
+    padding: 15px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    flex-grow: 1 !important; /* Faz esta área ocupar o máximo de espaço */
+}
+
+/* Título e Descrição aparecem TOTALMENTE */
+.product-card h3, 
+.product-card p {
+    display: block !important; /* Remove o corte de linhas */
+    height: auto !important;   /* Deixa o texto crescer */
+    overflow: visible !important;
+    -webkit-line-clamp: unset !important;
+    margin-bottom: 15px !important;
+}
+
+/* Container de Preço e Botão SEMPRE no final */
+.product-card .price-container {
+    margin-top: auto !important; /* Mágica: empurra para o fundo do card */
     display: flex !important;
     justify-content: space-between !important;
     align-items: center !important;
-    margin-top: auto !important; /* A MÁGICA: Empurra tudo isso para o fim do card */
-    padding: 0 15px !important;
-}
-
-/* Trava a altura da descrição para evitar que um card seja muito maior que outro */
-.product-card p {
-    flex-grow: 1 !important; /* Ocupa o espaço restante */
-    display: -webkit-box !important;
-    -webkit-line-clamp: 3 !important; /* Limita a 3 linhas */
-    -webkit-box-orient: vertical !important;
-    overflow: hidden !important;
-    margin-bottom: 15px !important;
-    min-height: 60px !important; /* Garante que mesmo sem texto, o espaço exista */
+    padding-top: 10px !important;
 }
