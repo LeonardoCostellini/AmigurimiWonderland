@@ -1360,45 +1360,106 @@ button {
 
 
 
-@media (max-width: 768px) {
-  
-  /* 1. Faz o modal virar uma coluna só (Imagem em cima, Texto embaixo) */
-  .modal-product-content {
-    grid-template-columns: 1fr !important; 
-    padding: 20px !important;
-    gap: 15px !important;
-  }
+/* ============================================================
+   AJUSTES DE RESPONSIVIDADE E MODAL (NÃO REMOVE ANIMAÇÕES)
+   ============================================================ */
 
-  /* 2. Ajusta o tamanho da imagem no celular para não sumir o botão de comprar */
-  .modal-images img {
-    max-height: 280px !important; 
-    object-fit: contain !important;
-  }
+/* 1. Ajuste Geral do Modal para todas as telas */
+.modal-overlay {
+  z-index: 9999; /* Garante que fique acima de tudo */
+}
 
-  /* 3. Permite que o modal role para baixo se o texto for longo */
-  .modal-product {
-    max-height: 95vh !important;
-    overflow-y: auto !important;
-  }
-
-  /* 4. Ajusta a grade de produtos (opcional: 2 por linha fica melhor) */
-  .products-grid {
-    grid-template-columns: repeat(2, 1fr) !important;
-    gap: 10px !important;
-  }
+.modal-product {
+  max-height: 95vh; /* Evita que o modal saia da tela */
+  overflow-y: auto; /* Adiciona rolagem interna se o conteúdo for grande */
+  display: flex;
+  flex-direction: column;
 }
 
 .modal-product-content {
   display: grid;
-  grid-template-columns: 1fr 1fr; /* Aqui define 2 colunas para PC */
-  gap: 32px;
-  padding: 32px;
+  grid-template-columns: 1fr 1fr; /* 2 colunas no PC */
+  gap: 30px;
+  padding: 30px;
+  align-items: start;
 }
 
-/* Garanta que a imagem principal tenha um tamanho limite no PC */
-.modal-images img {
+/* Garante que a imagem principal não quebre o layout */
+.modal-images img#modalMainImage {
   width: 100%;
-  max-height: 450px; /* Adicione isso para a imagem não ficar infinita */
-  object-fit: contain; /* Isso evita que a foto seja cortada */
-  border-radius: 16px;
+  height: auto;
+  max-height: 450px; 
+  object-fit: contain; /* Mostra a foto inteira sem cortar */
+  background: #fdfdfd;
+  border-radius: 15px;
+}
+
+/* 2. MEDIA QUERY - AJUSTES PARA CELULAR (Mobile) */
+@media (max-width: 768px) {
+  
+  /* Ajuste do Header e Logo */
+  .header {
+    padding: 1rem !important;
+  }
+  
+  .hero-title {
+    font-size: 2rem !important;
+  }
+
+  /* Grid de Produtos: 2 por linha no celular (estilo loja profissional) */
+  .products-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 15px !important;
+    padding: 10px !important;
+  }
+
+  /* MODAL NO CELULAR - O Ponto Crítico */
+  .modal-product-content {
+    grid-template-columns: 1fr !important; /* Vira 1 coluna (Foto em cima, texto embaixo) */
+    padding: 20px !important;
+    gap: 20px !important;
+  }
+
+  .modal-images img#modalMainImage {
+    max-height: 280px !important; /* Foto um pouco menor para caber o botão comprar */
+  }
+
+  .modal-info {
+    text-align: center;
+  }
+
+  .modal-info h2 {
+    font-size: 1.5rem !important;
+  }
+
+  /* Seção Sobre e Contato */
+  .about-container, .contact-container, .footer-content {
+    grid-template-columns: 1fr !important;
+    text-align: center;
+  }
+
+  .about-image img {
+    height: 250px !important;
+  }
+
+  .about-stats {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Sidebar do Carrinho */
+  .cart-sidebar {
+    width: 100% !important; /* Ocupa a tela toda no celular */
+  }
+}
+
+/* Ajuste fino para telas muito pequenas (iPhone SE, etc) */
+@media (max-width: 480px) {
+  .products-grid {
+    grid-template-columns: 1fr !important; /* 1 produto por linha em telas minúsculas */
+  }
+  
+  .pill {
+    padding: 0.5rem 1rem !important;
+    font-size: 0.8rem !important;
+  }
 }
