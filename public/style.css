@@ -1499,3 +1499,31 @@ body.modal-open {
     overflow: hidden !important;
 }
 
+/* ALINHAMENTO VITRINE */
+.product-card {
+    display: flex !important;
+    flex-direction: column !important;
+    height: 100% !important;
+    justify-content: space-between !important; /* Distribui o espaço */
+    padding-bottom: 20px !important;
+}
+
+/* Container do Preço e Botão */
+.product-info-footer {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    margin-top: auto !important; /* A MÁGICA: Empurra tudo isso para o fim do card */
+    padding: 0 15px !important;
+}
+
+/* Trava a altura da descrição para evitar que um card seja muito maior que outro */
+.product-card p {
+    flex-grow: 1 !important; /* Ocupa o espaço restante */
+    display: -webkit-box !important;
+    -webkit-line-clamp: 3 !important; /* Limita a 3 linhas */
+    -webkit-box-orient: vertical !important;
+    overflow: hidden !important;
+    margin-bottom: 15px !important;
+    min-height: 60px !important; /* Garante que mesmo sem texto, o espaço exista */
+}

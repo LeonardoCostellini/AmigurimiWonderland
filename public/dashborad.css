@@ -228,3 +228,33 @@ body {
 
 .btn-edit { background: var(--blue); }
 .btn-delete { background: var(--red); }
+
+/* ALINHAMENTO DASHBOARD */
+.card {
+    display: flex !important;
+    flex-direction: column !important;
+    height: 100% !important;
+}
+
+.card-content {
+    display: flex !important;
+    flex-direction: column !important;
+    flex-grow: 1 !important; /* Faz o conteúdo esticar */
+}
+
+/* Descrição no Dashboard */
+.card-content p {
+    flex-grow: 1 !important;
+    margin-bottom: 20px !important;
+    /* Altura mínima para descrições curtas não puxarem o botão para cima */
+    min-height: 80px !important; 
+}
+
+/* Container dos botões Editar/Excluir */
+.card-actions {
+    margin-top: auto !important; /* Garante que fiquem no "chão" do card */
+    display: flex !important;
+    gap: 10px !important;
+    padding: 15px !important;
+    border-top: 1px solid #eee !important;
+}
