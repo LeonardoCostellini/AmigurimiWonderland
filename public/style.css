@@ -1361,105 +1361,65 @@ button {
 
 
 /* ============================================================
-   AJUSTES DE RESPONSIVIDADE E MODAL (NÃO REMOVE ANIMAÇÕES)
+   FIX FINAL DE ALINHAMENTO (CORREÇÃO DAS IMAGENS À ESQUERDA)
    ============================================================ */
 
-/* 1. Ajuste Geral do Modal para todas as telas */
-.modal-overlay {
-  z-index: 9999; /* Garante que fique acima de tudo */
-}
-
-.modal-product {
-  max-height: 95vh; /* Evita que o modal saia da tela */
-  overflow-y: auto; /* Adiciona rolagem interna se o conteúdo for grande */
-  display: flex;
-  flex-direction: column;
-}
-
+/* Força o container do modal a ser centralizado e ocupar o espaço todo */
 .modal-product-content {
-  display: grid;
-  grid-template-columns: 1fr 1fr; /* 2 colunas no PC */
-  gap: 30px;
-  padding: 30px;
-  align-items: start;
+    display: flex !important; /* Mudamos para flex para garantir controle total */
+    flex-direction: row;      /* Lado a lado no PC */
+    align-items: center !important;
+    justify-content: center !important;
+    width: 100% !important;
+    margin: 0 auto !important;
 }
 
-/* Garante que a imagem principal não quebre o layout */
-.modal-images img#modalMainImage {
-  width: 100%;
-  height: auto;
-  max-height: 450px; 
-  object-fit: contain; /* Mostra a foto inteira sem cortar */
-  background: #fdfdfd;
-  border-radius: 15px;
+/* Centraliza o bloco da imagem */
+.modal-images {
+    flex: 1 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important; /* Centraliza a imagem principal e as thumbs */
+    justify-content: center !important;
 }
 
-/* 2. MEDIA QUERY - AJUSTES PARA CELULAR (Mobile) */
+/* Força a imagem principal a não "fugir" para a esquerda */
+#modalMainImage {
+    display: block !important;
+    margin: 0 auto !important;
+    max-width: 100% !important;
+    height: auto !important;
+    object-fit: contain !important;
+}
+
+/* Centraliza as miniaturas (thumbs) */
+.modal-thumbs {
+    justify-content: center !important;
+    width: 100% !important;
+}
+
+/* Ajuste para a coluna de informações */
+.modal-info {
+    flex: 1 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+}
+
+/* MEDIA QUERY - AJUSTE CELULAR */
 @media (max-width: 768px) {
-  
-  /* Ajuste do Header e Logo */
-  .header {
-    padding: 1rem !important;
-  }
-  
-  .hero-title {
-    font-size: 2rem !important;
-  }
+    .modal-product-content {
+        flex-direction: column !important; /* Empilha no celular */
+        padding: 15px !important;
+    }
 
-  /* Grid de Produtos: 2 por linha no celular (estilo loja profissional) */
-  .products-grid {
-    grid-template-columns: repeat(2, 1fr) !important;
-    gap: 15px !important;
-    padding: 10px !important;
-  }
+    .modal-images, .modal-info {
+        width: 100% !important;
+        text-align: center !important;
+    }
 
-  /* MODAL NO CELULAR - O Ponto Crítico */
-  .modal-product-content {
-    grid-template-columns: 1fr !important; /* Vira 1 coluna (Foto em cima, texto embaixo) */
-    padding: 20px !important;
-    gap: 20px !important;
-  }
-
-  .modal-images img#modalMainImage {
-    max-height: 280px !important; /* Foto um pouco menor para caber o botão comprar */
-  }
-
-  .modal-info {
-    text-align: center;
-  }
-
-  .modal-info h2 {
-    font-size: 1.5rem !important;
-  }
-
-  /* Seção Sobre e Contato */
-  .about-container, .contact-container, .footer-content {
-    grid-template-columns: 1fr !important;
-    text-align: center;
-  }
-
-  .about-image img {
-    height: 250px !important;
-  }
-
-  .about-stats {
-    grid-template-columns: 1fr !important;
-  }
-
-  /* Sidebar do Carrinho */
-  .cart-sidebar {
-    width: 100% !important; /* Ocupa a tela toda no celular */
-  }
-}
-
-/* Ajuste fino para telas muito pequenas (iPhone SE, etc) */
-@media (max-width: 480px) {
-  .products-grid {
-    grid-template-columns: 1fr !important; /* 1 produto por linha em telas minúsculas */
-  }
-  
-  .pill {
-    padding: 0.5rem 1rem !important;
-    font-size: 0.8rem !important;
-  }
+    .modal-info button {
+        margin: 0 auto !important; /* Centraliza o botão de comprar */
+        width: 80%;
+    }
 }
