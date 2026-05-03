@@ -1453,19 +1453,48 @@ button {
 /* 4. MODAL E CORREÇÕES GERAIS */
 .modal-product {
     width: 92% !important;
-    max-height: 85vh !important;
+    max-height: 90vh !important; /* Aumentei um pouco a altura */
     border-radius: 20px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    overflow: hidden !important; /* Trava a borda do modal */
+    background: #fff !important;
+}
+
+/* NOVA REGRA: Isso cria a rolagem interna no conteúdo */
+.modal-product-content {
+    overflow-y: auto !important; /* ATIVA A ROLAGEM AQUI */
+    flex-grow: 1 !important;
+    padding: 25px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 15px !important;
+}
+
+/* Ajuste para a imagem não sumir na rolagem no celular */
+.modal-images img {
+    max-height: 250px !important;
+    object-fit: contain !important;
+    width: 100% !important;
+    margin-bottom: 10px !important;
 }
 
 .modal-close {
+    position: absolute !important;
+    top: 10px !important;
+    right: 10px !important;
+    z-index: 2000 !important; /* Garante que o X fique sempre visível */
     background: var(--accent) !important;
     color: #000 !important;
     width: 32px !important;
     height: 32px !important;
+    border-radius: 50% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
 }
 
-/* TIRA O VAZAMENTO DA TELA */
-html, body {
-    max-width: 100vw !important;
-    overflow-x: hidden !important;
+/* Garante que o corpo da página não role enquanto o modal estiver aberto */
+body.modal-open {
+    overflow: hidden !important;
 }
