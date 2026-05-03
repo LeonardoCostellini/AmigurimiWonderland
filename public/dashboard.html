@@ -3,10 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <title>Dashboard | Amigurimi</title>
-
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="icon" type="image/png" href="img/favicon.png">
-
   <style>
     :root {
       --yellow: #FFC107;
@@ -37,499 +34,129 @@
       align-items: center;
     }
 
-    .header-title {
-      font-size: 22px;
-      font-weight: 600;
-    }
-
-    /* TABS */
-    .tabs {
-      padding: 20px 40px;
-      display: flex;
-      gap: 15px;
-      background: white;
-      border-bottom: 1px solid var(--border);
-    }
-
-    .tab {
-      padding: 12px 24px;
-      border-radius: 50px;
-      border: 1px solid var(--border);
-      background: white;
-      cursor: pointer;
-      font-weight: 500;
-    }
-
-    .tab.active {
-      background: var(--yellow);
-      border-color: var(--yellow);
-      font-weight: 600;
-    }
+    .header-title { font-size: 22px; font-weight: 600; }
 
     /* CONTENT */
-    .content {
-      padding: 30px 40px;
-    }
+    .content { padding: 30px 40px; max-width: 1400px; margin: 0 auto; }
 
-    /* FORM */
-    form {
-      max-width: 600px;
+    /* FORM AJUSTADO */
+    #productForm {
+      max-width: 800px;
       background: white;
       padding: 30px;
       border-radius: 20px;
-      margin-bottom: 40px;
+      margin: 0 auto 40px auto;
       box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+    }
+    #productForm #name, #productForm #description, #productForm button { grid-column: span 2; }
+    #productForm input, #productForm textarea {
+      width: 100%; padding: 12px; border-radius: 10px; border: 1px solid var(--border); font-family: inherit;
+    }
+    #productForm button {
+      background: var(--yellow); border: none; padding: 15px; border-radius: 50px; font-weight: 600; cursor: pointer;
     }
 
-    form input,
-    form textarea {
-      width: 100%;
-      padding: 14px;
-      margin-bottom: 14px;
-      border-radius: 12px;
-      border: 1px solid var(--border);
-      font-family: 'Poppins', sans-serif;
-    }
-
-    form button {
-      width: 100%;
-      padding: 14px;
-      border-radius: 50px;
-      border: none;
-      background: var(--yellow);
-      font-weight: 600;
-      cursor: pointer;
-    }
-
-    /* GRID */
+    /* GRID - AQUI COMEÇA A CORREÇÃO DA GANGORRA */
     .products-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-      gap: 24px;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 25px;
+      align-items: stretch; /* Força cards da mesma linha a terem a mesma altura */
     }
 
-    /* CARD */
     .card {
       background: white;
       border-radius: 20px;
       overflow: hidden;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-      transition: 0.3s;
-    }
-
-    .card:hover {
-      transform: translateY(-4px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      display: flex;
+      flex-direction: column; /* Empilhamento vertical */
+      height: 100%;
     }
 
     .card-main-image {
-      width: 100%;
-      height: 220px;
-      object-fit: cover;
-      cursor: pointer;
-      background: #f5f5f5;
+      width: 100%; height: 220px; object-fit: cover; background: #f5f5f5;
     }
 
     .card-content {
       padding: 20px;
+      flex-grow: 1; /* Faz o conteúdo ocupar o espaço e empurrar os botões */
+      display: flex;
+      flex-direction: column;
     }
 
     .card-content h3 {
+      font-size: 18px;
       margin-bottom: 8px;
+      /* Trava altura do título */
+      height: 50px;
+      overflow: hidden;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+    }
+
+    .card-content p {
+      font-size: 14px;
+      color: var(--muted);
+      flex-grow: 1; /* Ocupa o espaço entre título e preço */
+      margin-bottom: 15px;
+      /* Trava altura da descrição (Dashboard precisa ser compacto) */
+      height: 60px;
+      overflow: hidden;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
     }
 
     .card-actions {
+      padding: 20px;
+      margin-top: auto; /* Cola no fundo do card */
       display: flex;
       gap: 10px;
-      margin-top: 16px;
+      border-top: 1px solid var(--border);
     }
 
-    .btn-edit {
-      flex: 1;
-      background: var(--blue);
-      color: white;
-      border: none;
-      padding: 10px;
-      border-radius: 50px;
-      cursor: pointer;
+    .btn-edit, .btn-delete {
+      flex: 1; padding: 10px; border-radius: 10px; border: none; color: white; font-weight: 600; cursor: pointer;
     }
-
-    .btn-delete {
-      flex: 1;
-      background: var(--red);
-      color: white;
-      border: none;
-      padding: 10px;
-      border-radius: 50px;
-      cursor: pointer;
-    }
+    .btn-edit { background: var(--blue); }
+    .btn-delete { background: var(--red); }
 
     /* MODAL */
     .modal-overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.6);
-      display: none;
-      align-items: center;
-      justify-content: center;
-      z-index: 9999;
+      position: fixed; inset: 0; background: rgba(0,0,0,0.7); display: none; align-items: center; justify-content: center; z-index: 9999;
     }
-
-    .modal-overlay.show {
-      display: flex;
-    }
-
-    .modal {
-      background: white;
-      border-radius: 24px;
-      max-width: 900px;
-      width: 90%;
-      padding: 30px;
-      position: relative;
-    }
-
-    .modal-close {
-      position: absolute;
-      top: 20px;
-      right: 20px;
-      border: none;
-      width: 36px;
-      height: 36px;
-      border-radius: 50%;
-      cursor: pointer;
-    }
-
-    .modal-images img {
-      width: 100%;
-      border-radius: 16px;
-    }
-
-    .modal-thumbs {
-      display: flex;
-      gap: 10px;
-      margin-top: 12px;
-    }
-
-    .modal-thumbs img {
-      width: 70px;
-      height: 70px;
-      object-fit: cover;
-      border-radius: 12px;
-      cursor: pointer;
-      opacity: 0.6;
-      border: 2px solid transparent;
-    }
-
-    .modal-thumbs img.active {
-      opacity: 1;
-      border-color: var(--yellow);
-    }
-
-    /* ==================== VARIÁVEIS E RESET ==================== */
-:root {
-  --yellow: #FFC107;
-  --yellow-hover: #FFB000;
-  --blue: #4F46E5;
-  --red: #EF4444;
-  --text: #2F2F2F;
-  --muted: #8A8A8A;
-  --border: #EDEDED;
-  --bg: #FFFDF7;
-}
-
-* { margin: 0; padding: 0; box-sizing: border-box; }
-
-body {
-  font-family: 'Poppins', sans-serif;
-  background: var(--bg);
-  color: var(--text);
-  overflow-x: hidden;
-}
-
-/* ==================== HEADER E TABS ==================== */
-.header {
-  padding: 20px 40px;
-  background: white;
-  border-bottom: 1px solid var(--border);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.header-title {
-  font-size: 22px;
-  font-weight: 600;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.tabs {
-  padding: 15px 40px;
-  display: flex;
-  justify-content: center;
-  gap: 12px;
-  background: white;
-  border-bottom: 1px solid var(--border);
-  position: sticky;
-  top: 0;
-  z-index: 100;
-}
-
-.tab {
-  padding: 10px 22px;
-  border-radius: 50px;
-  border: 1px solid var(--border);
-  background: white;
-  cursor: pointer;
-  font-weight: 500;
-  transition: all 0.3s ease;
-}
-
-.tab.active {
-  background: var(--yellow);
-  border-color: var(--yellow);
-  box-shadow: 0 4px 10px rgba(255, 193, 7, 0.2);
-}
-
-.tab:hover:not(.active) {
-  background: #fdfdfd;
-  transform: translateY(-2px);
-}
-
-/* ==================== FORMULÁRIO (ESTILIZADO) ==================== */
-.content {
-  padding: 30px 20px;
-  max-width: 1200px;
-  margin: 0 auto;
-}
-
-#productForm {
-  max-width: 800px;
-  background: white;
-  padding: 30px;
-  border-radius: 24px;
-  margin: 0 auto 50px auto;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.05);
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 15px;
-  animation: fadeIn 0.6s ease-out;
-}
-
-#productForm input, #productForm textarea {
-  width: 100%;
-  padding: 12px 16px;
-  border-radius: 12px;
-  border: 1px solid var(--border);
-  font-family: inherit;
-  background: #FAFAFA;
-  transition: all 0.3s;
-}
-
-#productForm input:focus, #productForm textarea:focus {
-  border-color: var(--yellow);
-  background: white;
-  outline: none;
-  box-shadow: 0 0 0 4px rgba(255, 193, 7, 0.1);
-}
-
-/* Itens que ocupam a largura toda do formulário */
-#productForm #name, #productForm #description, #productForm button {
-  grid-column: span 2;
-}
-
-#productForm textarea { height: 100px; resize: none; }
-
-#productForm button {
-  background: var(--yellow);
-  padding: 15px;
-  border-radius: 15px;
-  font-weight: 700;
-  font-size: 16px;
-  border: none;
-  cursor: pointer;
-  transition: all 0.3s;
-  margin-top: 10px;
-}
-
-#productForm button:hover {
-  background: var(--yellow-hover);
-  transform: scale(1.02);
-}
-
-/* ==================== GRID E CARDS (ALINHAMENTO TOTAL) ==================== */
-.products-grid {
-  display: grid;
-  /* Define colunas iguais no PC */
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 25px;
-  align-items: stretch; /* Força todos os cards da mesma linha a terem a mesma altura */
-}
-
-.card {
-  background: white;
-  border-radius: 20px;
-  overflow: hidden;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  animation: fadeUp 0.5s ease backwards;
-  
-  /* Flexbox vertical para controlar o empilhamento interno */
-  display: flex;
-  flex-direction: column;
-  height: 100%; 
-}
-
-.card:hover {
-  transform: translateY(-8px);
-  box-shadow: 0 15px 30px rgba(0,0,0,0.1);
-}
-
-.card-main-image {
-  width: 100%;
-  height: 220px;
-  object-fit: cover;
-  background: #f5f5f5;
-  flex-shrink: 0; /* Garante que a imagem não mude de tamanho */
-}
-
-.card-content {
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
-  flex-grow: 1; /* Faz esta área ocupar todo o espaço disponível entre a imagem e os botões */
-}
-
-.card-content h3 { 
-  font-size: 18px; 
-  margin-bottom: 8px;
-  /* Limita o título a 2 linhas e trava a altura */
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  height: 50px; /* ALTURA FIXA: Mantém o alinhamento mesmo com nomes curtos */
-}
-
-/* Estilização do Preço (se você usar a classe .price ou um <p>) */
-.card-content .price {
-  font-weight: 700;
-  color: var(--blue);
-  font-size: 1.1rem;
-  margin-bottom: 10px;
-}
-
-.card-content p { 
-  font-size: 14px; 
-  color: var(--muted); 
-  margin-bottom: 15px;
-  /* Limita a descrição a 3 linhas e trava a altura */
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  height: 60px; /* ALTURA FIXA: Evita a gangorra na descrição */
-}
-
-.card-actions {
-  display: flex;
-  gap: 10px;
-  padding: 20px;
-  margin-top: auto; /* EMPURRA PARA O FINAL: Mágica do Flexbox */
-  border-top: 1px solid var(--border); /* Opcional: uma linha sutil para separar */
-}
-
-.btn-edit, .btn-delete {
-  flex: 1;
-  padding: 12px;
-  border-radius: 12px;
-  border: none;
-  font-weight: 600;
-  cursor: pointer;
-  color: white;
-  transition: 0.3s;
-  font-size: 13px;
-  white-space: nowrap; /* Impede que o texto do botão quebre */
-}
-
-.btn-edit { background: var(--blue); }
-.btn-delete { background: var(--red); }
-
-/* DASHBOARD: Organizado com texto limitado */
-.card {
-    display: flex !important;
-    flex-direction: column !important;
-    height: 100% !important;
-}
-
-.card-content {
-    flex-grow: 1 !important;
-    display: flex !important;
-    flex-direction: column !important;
-}
-
-/* No dashboard, limitamos a descrição para manter o padrão */
-.card-content p {
-    display: -webkit-box !important;
-    -webkit-line-clamp: 3 !important; /* 3 linhas no máximo */
-    -webkit-box-orient: vertical !important;
-    overflow: hidden !important;
-    margin-bottom: 15px !important;
-    min-height: 60px !important;
-}
-
-.card-actions {
-    margin-top: auto !important;
-    display: flex !important;
-    gap: 10px !important;
-    padding: 15px !important;
-}
+    .modal-overlay.show { display: flex; }
+    .modal { background: white; padding: 25px; border-radius: 20px; width: 90%; max-width: 500px; position: relative; }
   </style>
 
   <script>
-    if (!localStorage.getItem('token')) {
-      window.location.href = '/login.html'
-    }
+    if (!localStorage.getItem('token')) { window.location.href = '/login.html' }
   </script>
 </head>
-
 <body>
 
   <div class="header">
     <div class="header-title">🧶 Painel Administrativo</div>
   </div>
 
-  <div class="tabs">
-    <button class="tab active">🏷️ Produtos</button>
-    <button class="tab">📑 Categorias (Inativo) </button>
-  </div>
-
   <div class="content">
-
     <form id="productForm">
-      <input type="text" id="name" placeholder="Nome" required>
-      <input type="text" id="imageUrl1" placeholder="Imagem 1 (principal)" required>
-      <input type="text" id="imageUrl2" placeholder="Imagem 2">
-      <input type="text" id="imageUrl3" placeholder="Imagem 3">
-      <input type="text" id="category" placeholder="Categoria">
-      <textarea id="description" placeholder="Descrição"></textarea>
-      <input type="number" id="price" step="0.01" placeholder="Preço" required>
-      <button type="submit">Salvar</button>
+      <input type="text" id="name" placeholder="Nome do Produto" required>
+      <input type="text" id="imageUrl1" placeholder="URL Imagem Principal" required>
+      <input type="text" id="imageUrl2" placeholder="URL Imagem 2 (Opcional)">
+      <input type="text" id="imageUrl3" placeholder="URL Imagem 3 (Opcional)">
+      <input type="text" id="category" placeholder="Categoria (ex: Animal, Pokémon)">
+      <textarea id="description" placeholder="Descrição do produto..."></textarea>
+      <input type="number" id="price" step="0.01" placeholder="Preço (Ex: 99.90)" required>
+      <button type="submit">Salvar Produto</button>
     </form>
 
     <div id="products" class="products-grid"></div>
-  </div>
-
-  <!-- MODAL -->
-  <div id="imageModal" class="modal-overlay">
-    <div class="modal">
-      <button class="modal-close" onclick="closeImageModal()">✕</button>
-
-      <div class="modal-images">
-        <img id="modalMainImage" src="">
-        <div id="modalThumbs" class="modal-thumbs"></div>
-      </div>
-    </div>
   </div>
 
   <script src="dashboard.js"></script>

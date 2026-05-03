@@ -1540,3 +1540,17 @@ body.modal-open {
     align-items: center !important;
     padding-top: 10px !important;
 }
+
+.product-card p {
+   height: auto !important; /* Libera o texto completo */
+   display: block !important;
+   -webkit-line-clamp: unset !important; 
+}
+
+/* O segredo para alinhar o botão no final mesmo com texto gigante */
+.product-card .footer-row {
+   margin-top: auto !important; 
+   display: flex;
+   justify-content: space-between;
+   align-items: center;
+}
