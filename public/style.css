@@ -1357,3 +1357,48 @@ button {
     grid-template-columns: 1fr;
   }
 }
+
+
+
+@media (max-width: 768px) {
+  
+  /* 1. Faz o modal virar uma coluna só (Imagem em cima, Texto embaixo) */
+  .modal-product-content {
+    grid-template-columns: 1fr !important; 
+    padding: 20px !important;
+    gap: 15px !important;
+  }
+
+  /* 2. Ajusta o tamanho da imagem no celular para não sumir o botão de comprar */
+  .modal-images img {
+    max-height: 280px !important; 
+    object-fit: contain !important;
+  }
+
+  /* 3. Permite que o modal role para baixo se o texto for longo */
+  .modal-product {
+    max-height: 95vh !important;
+    overflow-y: auto !important;
+  }
+
+  /* 4. Ajusta a grade de produtos (opcional: 2 por linha fica melhor) */
+  .products-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 10px !important;
+  }
+}
+
+.modal-product-content {
+  display: grid;
+  grid-template-columns: 1fr 1fr; /* Aqui define 2 colunas para PC */
+  gap: 32px;
+  padding: 32px;
+}
+
+/* Garanta que a imagem principal tenha um tamanho limite no PC */
+.modal-images img {
+  width: 100%;
+  max-height: 450px; /* Adicione isso para a imagem não ficar infinita */
+  object-fit: contain; /* Isso evita que a foto seja cortada */
+  border-radius: 16px;
+}
