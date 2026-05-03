@@ -1358,68 +1358,108 @@ button {
   }
 }
 
-
-
 /* ============================================================
-   FIX FINAL DE ALINHAMENTO (CORREÇÃO DAS IMAGENS À ESQUERDA)
+   SOLUÇÃO DEFINITIVA: RESPONSIVIDADE, MODAL E MENU
    ============================================================ */
 
-/* Força o container do modal a ser centralizado e ocupar o espaço todo */
-.modal-product-content {
-    display: flex !important; /* Mudamos para flex para garantir controle total */
-    flex-direction: row;      /* Lado a lado no PC */
+/* 1. CORREÇÃO DO VAZAMENTO (TIRA O ZOOM INDESEJADO) */
+html, body {
+    max-width: 100vw !important;
+    overflow-x: hidden !important;
+    position: relative;
+}
+
+/* 2. AJUSTE DO HEADER (MENU QUE SOME) */
+@media (max-width: 768px) {
+    .header {
+        padding: 1rem !important;
+        width: 100% !important;
+        display: flex !important;
+        justify-content: space-between !important;
+        align-items: center !important;
+    }
+
+    .nav {
+        gap: 0.8rem !important; /* Diminui espaço entre links para caber na tela */
+    }
+
+    .nav a {
+        font-size: 0.75rem !important;
+    }
+
+    .logo-icon {
+        font-size: 1.2rem !important;
+    }
+}
+
+/* 3. FIX DO MODAL (CENTRALIZAÇÃO E BOTÃO DE FECHAR) */
+.modal-overlay {
+    padding: 10px !important;
+    display: none; /* Mantém o padrão do JS */
+}
+
+.modal-overlay.show {
+    display: flex !important;
     align-items: center !important;
     justify-content: center !important;
-    width: 100% !important;
-    margin: 0 auto !important;
 }
 
-/* Centraliza o bloco da imagem */
+.modal-product {
+    width: 95% !important;
+    max-width: 500px !important; /* No celular ele não deve ser muito largo */
+    max-height: 90vh !important;
+    position: relative !important;
+    margin: auto !important;
+    overflow-y: auto !important;
+    border-radius: 20px !important;
+}
+
+.modal-product-content {
+    display: flex !important;
+    flex-direction: column !important; /* Força empilhar no celular */
+    padding: 40px 20px 20px 20px !important;
+    gap: 15px !important;
+}
+
+/* Imagem no Modal */
 .modal-images {
-    flex: 1 !important;
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: center !important; /* Centraliza a imagem principal e as thumbs */
-    justify-content: center !important;
-}
-
-/* Força a imagem principal a não "fugir" para a esquerda */
-#modalMainImage {
-    display: block !important;
-    margin: 0 auto !important;
-    max-width: 100% !important;
-    height: auto !important;
-    object-fit: contain !important;
-}
-
-/* Centraliza as miniaturas (thumbs) */
-.modal-thumbs {
-    justify-content: center !important;
     width: 100% !important;
+    text-align: center !important;
 }
 
-/* Ajuste para a coluna de informações */
-.modal-info {
-    flex: 1 !important;
+.modal-images img#modalMainImage {
+    width: 100% !important;
+    max-height: 250px !important;
+    object-fit: contain !important;
+    margin: 0 auto !important;
+}
+
+/* Botão de Fechar (Garante que ele apareça e seja clicável) */
+.modal-close {
+    position: absolute !important;
+    top: 10px !important;
+    right: 10px !important;
+    z-index: 10000 !important;
+    background: #eee !important;
+    color: #333 !important;
+    width: 35px !important;
+    height: 35px !important;
+    border-radius: 50% !important;
     display: flex !important;
-    flex-direction: column !important;
+    align-items: center !important;
     justify-content: center !important;
+    cursor: pointer !important;
 }
 
-/* MEDIA QUERY - AJUSTE CELULAR */
-@media (max-width: 768px) {
-    .modal-product-content {
-        flex-direction: column !important; /* Empilha no celular */
-        padding: 15px !important;
+/* 4. GRID DE PRODUTOS (CARRINHO E LOJA) */
+@media (max-width: 480px) {
+    .products-grid {
+        grid-template-columns: repeat(2, 1fr) !important; /* 2 por linha */
+        gap: 10px !important;
+        padding: 5px !important;
     }
-
-    .modal-images, .modal-info {
-        width: 100% !important;
-        text-align: center !important;
-    }
-
-    .modal-info button {
-        margin: 0 auto !important; /* Centraliza o botão de comprar */
-        width: 80%;
+    
+    .product-card h3 {
+        font-size: 0.9rem !important;
     }
 }
