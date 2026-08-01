@@ -6,7 +6,7 @@
   <title>Amigurumi Wonderland - Crochê Artesanal</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;0,9..144,900;1,9..144,400;1,9..144,500&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
   <link rel="icon" type="image/png" href="img/favicon.png">
 </head>
@@ -20,7 +20,7 @@
       </div>
       <div class="splash-text">
         <h1>Amigurumi Wonderland</h1>
-        <p>Carregando magia...</p>
+        <p>carregando magia</p>
       </div>
       <div class="splash-loader">
         <div class="loader-bar">
@@ -50,13 +50,18 @@
 
   <!-- HERO SECTION -->
   <section class="hero" id="home">
-    <h1 class="hero-title">Nossos Amigurumis</h1>
-    <p class="hero-subtitle">Cada peça é única e feita com muito carinho ❤️</p>
+    <span class="eyebrow hero-eyebrow">Feito à mão, ponto por ponto</span>
+    <h1 class="hero-title">Personagens que <em>ganham vida</em> no crochê</h1>
+    <p class="hero-subtitle">Cada amigurumi é uma peça única, trabalhada fio a fio para trazer fofura, afeto e um toque artesanal para o seu dia.</p>
     <div class="filters" id="filters"></div>
   </section>
 
   <!-- PRODUCTS SECTION -->
   <section class="products-section">
+    <div class="section-heading" data-reveal>
+      <h2>A coleção da vez</h2>
+      <p>Peças únicas, feitas em pequenos lotes — quando esgotam, não voltam do mesmo jeito.</p>
+    </div>
     <div class="products-grid" id="productsGrid">
       <!-- Produtos inseridos via JavaScript -->
     </div>
@@ -65,10 +70,11 @@
   <!-- ABOUT SECTION -->
   <section class="about-section" id="sobre">
     <div class="about-container">
-      <div class="about-image">
+      <div class="about-image" data-reveal>
         <img src="img/favicon.png" alt="Amigurumi sendo feito">
       </div>
-      <div class="about-content">
+      <div class="about-content" data-reveal>
+        <span class="eyebrow">Sobre o ateliê</span>
         <h2>Feito com amor, ponto a ponto</h2>
         <p>
           Na <strong>Amigurumi Wonderland</strong>, cada peça é criada com amor e dedicação.
@@ -99,9 +105,10 @@
   </section>
 
   <!-- ENCOMENDA SECTION -->
-  <section class="about-section" id="encomendar" style="background: var(--bg2);">
+  <section class="about-section" id="encomendar">
     <div class="about-container">
-      <div class="about-content">
+      <div class="about-content" data-reveal>
+        <span class="eyebrow">Sob encomenda</span>
         <h2>Faça sua Encomenda</h2>
         <p>
           Gostou do nosso trabalho mas quer algo feito especialmente para você?
@@ -109,13 +116,12 @@
         </p>
         <br>
         <a href="https://wa.me/5543999149521?text=Olá! Gostaria de fazer uma encomenda personalizada."
-           target="_blank"
-           style="display:inline-flex;align-items:center;gap:0.5rem;background:var(--accent);color:var(--text);padding:0.9rem 2rem;border-radius:99px;text-decoration:none;font-weight:700;font-size:1rem;transition:all 0.25s;box-shadow:0 4px 16px rgba(212,168,67,0.35);">
+           target="_blank" class="whatsapp-cta">
           💬 Fazer Encomenda no WhatsApp
         </a>
       </div>
-      <div class="about-image">
-        <img src="img/4at16zB.png" alt="Informações sobre encomendas" style="border-radius:var(--radius);">
+      <div class="about-image" data-reveal>
+        <img src="img/4at16zB.png" alt="Informações sobre encomendas">
       </div>
     </div>
   </section>
@@ -123,7 +129,8 @@
   <!-- CONTACT SECTION -->
   <section class="contact-section" id="contato">
     <div class="contact-container">
-      <div class="contact-info">
+      <div class="contact-info" data-reveal>
+        <span class="eyebrow">Fale conosco</span>
         <h2>Entre em Contato</h2>
         <p>
           Tem alguma dúvida ou quer fazer um pedido personalizado?
@@ -144,7 +151,7 @@
           </div>
         </div>
       </div>
-      <form class="contact-form" id="contactForm">
+      <form class="contact-form" id="contactForm" data-reveal>
         <div class="form-group">
           <label for="name">Nome</label>
           <input type="text" id="name" name="name" required placeholder="Seu nome completo">
@@ -246,5 +253,6 @@
   </div>
 
   <script src="script.js"></script>
+  <script src="effects.js"></script>
 </body>
 </html>

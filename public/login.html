@@ -3,197 +3,240 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Login - Amigurimi Wonderland</title>
+  <title>Login - Amigurumi Wonderland</title>
   <link rel="icon" type="image/png" sizes="32x32" href="img/favicon.png">
   <link rel="icon" type="image/png" sizes="16x16" href="img/favicon.png">
   <link rel="apple-touch-icon" sizes="180x180" href="img/favicon.png">
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;1,9..144,500&family=DM+Sans:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --paper: #FBF6EC;
+      --ink: #211711;
+      --on-ink: #F3E9D6;
+      --on-ink-muted: #B7A488;
+      --marigold: #E2A73C;
+      --marigold-deep: #B8842A;
+      --berry: #C14C43;
+      --berry-light: #F7DCD8;
+      --border: #E4D7BE;
+      --text: #211711;
+      --muted: #8A7A5C;
+      --font-display: 'Fraunces', Georgia, serif;
+      --font-body: 'DM Sans', system-ui, sans-serif;
+      --font-mono: 'Space Mono', 'Courier New', monospace;
+      --ease: cubic-bezier(0.16, 1, 0.3, 1);
     }
-    
+
     body {
-      font-family: 'Poppins', Arial, sans-serif;
-      background: linear-gradient(135deg, #FFF9E6 0%, #FFE5B4 50%, #FFF9E6 100%);
+      font-family: var(--font-body);
+      background: linear-gradient(150deg, #FFF9EC 0%, var(--paper) 45%, #F5E8C8 100%);
       display: flex;
       justify-content: center;
       align-items: center;
       min-height: 100vh;
       padding: 20px;
+      position: relative;
+      overflow: hidden;
     }
-    
+    body::before {
+      content: '';
+      position: absolute; top: -220px; right: -160px;
+      width: 620px; height: 620px;
+      background: radial-gradient(circle, rgba(212,168,67,0.22) 0%, transparent 68%);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+    body::after {
+      content: '';
+      position: absolute; bottom: -260px; left: -180px;
+      width: 520px; height: 520px;
+      background: radial-gradient(circle, rgba(224,82,82,0.08) 0%, transparent 70%);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+
     .login-card {
-      background: white;
-      padding: 50px 40px;
-      border-radius: 30px;
-      border: 4px solid #FFC107;
-      box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+      background: var(--white, #fff);
+      padding: 3.2rem 2.6rem;
+      border-radius: 26px;
+      box-shadow: 0 30px 70px rgba(100,70,20,0.16);
       width: 100%;
       max-width: 420px;
-      text-align: center;
+      text-align: left;
       position: relative;
+      z-index: 1;
+      animation: riseIn 0.6s var(--ease) both;
     }
-    
+
+    .badge {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      font-family: var(--font-mono);
+      font-size: 0.68rem; letter-spacing: 0.14em; text-transform: uppercase;
+      color: var(--marigold-deep); font-weight: 700;
+      margin-bottom: 1.4rem;
+    }
+    .badge::before { content: ''; width: 20px; height: 1.5px; background: var(--marigold-deep); }
+
     .login-card h2 {
-      margin: 0 0 10px 0;
-      color: #2F2F2F;
-      font-size: 32px;
-      font-weight: 700;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
+      margin: 0 0 0.5rem 0;
+      color: var(--text);
+      font-family: var(--font-display);
+      font-size: 2rem;
+      font-weight: 600;
+      font-style: italic;
+      letter-spacing: -0.01em;
     }
-    
+
     .login-card .subtitle {
-      color: #8A8A8A;
-      font-size: 14px;
-      margin-bottom: 35px;
+      color: var(--muted);
+      font-size: 0.9rem;
+      margin-bottom: 2.2rem;
       font-weight: 400;
     }
-    
+
     .form-group {
       text-align: left;
-      margin-bottom: 20px;
+      margin-bottom: 1.1rem;
     }
-    
+
     .form-group label {
       display: block;
-      color: #2F2F2F;
-      font-size: 14px;
-      font-weight: 500;
-      margin-bottom: 8px;
+      color: var(--text);
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      font-family: var(--font-mono);
+      margin-bottom: 0.5rem;
     }
-    
+
     .login-card input {
       width: 100%;
-      padding: 16px 18px;
-      border: 1px solid #EDEDED;
-      border-radius: 15px;
-      font-size: 15px;
-      font-family: 'Poppins', sans-serif;
+      padding: 0.9rem 1.05rem;
+      border: 1.5px solid var(--border);
+      border-radius: 12px;
+      font-size: 0.95rem;
+      font-family: var(--font-body);
       box-sizing: border-box;
-      transition: all 0.3s;
-      background: #FAFAFA;
-      color: #2F2F2F;
+      transition: all 0.25s;
+      background: #FFFFFF;
+      color: var(--text);
     }
-    
-    .login-card input::placeholder {
-      color: #BDBDBD;
-    }
-    
+
+    .login-card input::placeholder { color: #C4B69B; }
+
     .login-card input:focus {
       outline: none;
-      border-color: #FFC107;
-      background: white;
-      box-shadow: 0 0 0 3px rgba(255, 193, 7, 0.1);
+      border-color: var(--marigold-deep);
+      box-shadow: 0 0 0 4px rgba(226,167,60,0.16);
     }
-    
+
     .login-card button {
       width: 100%;
-      padding: 16px;
-      background: #FFC107;
-      color: #2F2F2F;
+      padding: 0.95rem;
+      background: var(--marigold);
+      color: var(--text);
       border: none;
-      border-radius: 50px;
-      font-size: 16px;
-      font-weight: 600;
+      border-radius: 99px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      letter-spacing: 0.02em;
       cursor: pointer;
-      transition: all 0.3s;
-      margin-top: 10px;
-      font-family: 'Poppins', sans-serif;
-      box-shadow: 0 4px 15px rgba(255, 193, 7, 0.3);
+      transition: all 0.3s var(--ease);
+      margin-top: 0.6rem;
+      font-family: var(--font-body);
+      box-shadow: 0 10px 24px rgba(184,132,42,0.25);
     }
-    
+
     .login-card button:hover {
-      background: #FFB000;
+      background: var(--marigold-deep);
+      color: white;
       transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(255, 193, 7, 0.4);
+      box-shadow: 0 14px 30px rgba(184,132,42,0.35);
     }
-    
-    .login-card button:active {
-      transform: translateY(0);
-    }
-    
+
+    .login-card button:active { transform: translateY(0); }
+
     .back-link {
-      margin-top: 25px;
-      color: #8A8A8A;
-      font-size: 14px;
+      margin-top: 1.6rem;
+      color: var(--muted);
+      font-size: 0.85rem;
       text-decoration: none;
-      display: inline-block;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
       transition: color 0.3s;
     }
-    
-    .back-link:hover {
-      color: #FFC107;
-    }
-    
+
+    .back-link:hover { color: var(--marigold-deep); }
+
     .error-message {
-      color: #FF4444;
-      margin-top: 15px;
-      font-size: 14px;
+      color: var(--berry);
+      margin-top: 1rem;
+      font-size: 0.85rem;
       display: none;
-      background: #FFE5E5;
-      padding: 12px;
+      background: var(--berry-light);
+      padding: 0.85rem 1rem;
       border-radius: 10px;
     }
-    
+
     .loading {
       display: none;
-      margin-top: 10px;
-      color: #8A8A8A;
+      margin-top: 0.8rem;
+      color: var(--muted);
+      font-size: 0.85rem;
+      font-family: var(--font-mono);
     }
-    
+
+    @keyframes riseIn {
+      from { opacity: 0; transform: translateY(24px) scale(0.98); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
     @media (max-width: 480px) {
-      .login-card {
-        padding: 40px 30px;
-        border-width: 3px;
-      }
-      
-      .login-card h2 {
-        font-size: 28px;
-      }
+      .login-card { padding: 2.6rem 1.8rem; }
+      .login-card h2 { font-size: 1.7rem; }
     }
   </style>
 </head>
 <body>
   <div class="login-card">
-    <h2>Painel Admin 🔐</h2>
+    <span class="badge">Painel administrativo</span>
+    <h2>Bem-vinda de volta</h2>
     <p class="subtitle">Faça login para gerenciar sua loja</p>
-    
+
     <form id="loginForm" onsubmit="event.preventDefault(); login();">
       <div class="form-group">
         <label for="email">Email</label>
-        <input 
-          type="email" 
-          id="email" 
-          placeholder="seu@email.com" 
-          required 
+        <input
+          type="email"
+          id="email"
+          placeholder="seu@email.com"
+          required
           autocomplete="email"
         />
       </div>
-      
+
       <div class="form-group">
         <label for="password">Senha</label>
-        <input 
-          type="password" 
-          id="password" 
-          placeholder="••••••" 
-          required 
+        <input
+          type="password"
+          id="password"
+          placeholder="••••••"
+          required
           autocomplete="current-password"
         />
       </div>
-      
+
       <button type="submit">Entrar</button>
     </form>
-    
+
     <div class="error-message" id="errorMessage"></div>
     <div class="loading" id="loading">Carregando...</div>
-    
-    <a href="/" class="back-link">Voltar para a loja</a>
+
+    <a href="/" class="back-link">← Voltar para a loja</a>
   </div>
 
 <script>
